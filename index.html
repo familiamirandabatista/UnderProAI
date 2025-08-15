@@ -18,7 +18,7 @@
             --color-background: #121212; /* Fundo escuro principal */
             --color-surface: #1E1E1E; /* Cor para os cards */
             --color-text-primary: #EAEAEA;
-            --color-text-secondary: #A0A0A0;
+            --color-text-secondary: #BBBBBB; /* COR AJUSTADA PARA MELHOR CONTRASTE */
             --color-border: #333333;
             --border-radius: 12px;
             --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -39,6 +39,7 @@
         body {
             font-family: var(--font-family-primary);
             background-color: var(--color-background);
+            background-image: url('images/background-texture.png');
             color: var(--color-text-primary);
             line-height: 1.7;
             -webkit-font-smoothing: antialiased;
@@ -83,15 +84,9 @@
         }
 
         .logo {
-            height: 55px;
+            height: 60px; /* TAMANHO DA LOGO AUMENTADO */
             width: auto;
-            mix-blend-mode: multiply; /* Efeito para remover o fundo branco */
         }
-        
-        body:not(.scrolled) .logo {
-             mix-blend-mode: normal; /* Remove o efeito quando no topo */
-        }
-
 
         #main-nav ul {
             list-style: none;
@@ -186,7 +181,7 @@
         
         /* --- SEÇÃO DE FEATURES --- */
         #features {
-             background-image: url('images/fundo-palavras.PNG');
+             background-image: linear-gradient(rgba(18, 18, 18, 0.95), rgba(18, 18, 18, 0.95)), url('images/fundo-palavras.PNG');
              background-size: cover;
              background-repeat: no-repeat;
         }
@@ -283,7 +278,7 @@
         
         /* --- SEÇÃO DEPOIMENTOS --- */
         #testimonials {
-            background-image: url('images/fundo-geometrico.png');
+            background-image: linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)), url('images/fundo-geometrico.png');
             background-size: cover;
         }
         .testimonials-grid {
@@ -373,6 +368,7 @@
 
     <header id="main-header">
         <div class="container">
+            <!-- LOGO ATUALIZADA -->
             <img src="images/logo.png" alt="UnderPro AI Logo" class="logo">
             <nav id="main-nav">
                 <ul>
@@ -456,7 +452,8 @@
                     <div class="testimonial-card reveal">
                         <p>"Finalmente uma plataforma que trata apostas como investimento. A transparência e as ferramentas de gestão mudaram meu jogo completamente."</p>
                         <div class="testimonial-author">
-                            <img src="https://placehold.co/100x100/EFEFEF/AAAAAA&text=JP" alt="Foto de João P.">
+                            <!-- FOTO DE PERFIL DO HOMEM -->
+                            <img src="images/foto-homem.png" alt="Foto de João P.">
                             <div>
                                 <h4>João P.</h4>
                                 <span>Membro Premium</span>
@@ -464,9 +461,10 @@
                         </div>
                     </div>
                     <div class="testimonial-card reveal">
-                        <p>"Eu era cético no início, mas os resultados falam por si. A análise de dados da UnderPro AI é de outro nível. Recomendo fortemente."</p>
+                        <p>"Eu era cética no início, mas os resultados falam por si. A análise de dados da UnderPro AI é de outro nível. Recomendo fortemente."</p>
                         <div class="testimonial-author">
-                            <img src="https://placehold.co/100x100/EFEFEF/AAAAAA&text=MR" alt="Foto de Maria R.">
+                            <!-- FOTO DE PERFIL DA MULHER -->
+                            <img src="images/foto-mulher.png" alt="Foto de Maria R.">
                             <div>
                                 <h4>Maria R.</h4>
                                 <span>Membro Premium</span>
@@ -506,17 +504,8 @@
             }
         }
         
-        function handleScroll() {
-            if (window.scrollY > 50) {
-                document.body.classList.add('scrolled');
-            } else {
-                document.body.classList.remove('scrolled');
-            }
-            revealOnScroll();
-        }
-
-        window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Executa uma vez no carregamento
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Executa uma vez no carregamento
     </script>
 
 </body>
