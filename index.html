@@ -12,16 +12,16 @@
     <style>
         /* --- DESIGN SYSTEM E VARIÁVEIS GLOBAIS --- */
         :root {
-            --color-primary: #0A74FF;
-            --color-primary-dark: #0056b3;
-            --color-secondary: #00D1B2;
-            --color-background: #FFFFFF;
-            --color-surface: #F8F9FA;
-            --color-text-primary: #212529;
-            --color-text-secondary: #6C757D;
-            --color-text-on-dark: #FFFFFF;
+            --color-primary: #00D1B2; /* Verde-água tecnológico */
+            --color-primary-dark: #00a38d;
+            --color-secondary: #3273DC; /* Azul para links e destaques */
+            --color-background: #121212; /* Fundo escuro principal */
+            --color-surface: #1E1E1E; /* Cor para os cards */
+            --color-text-primary: #EAEAEA;
+            --color-text-secondary: #A0A0A0;
+            --color-border: #333333;
             --border-radius: 12px;
-            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             --font-family-primary: 'Inter', sans-serif;
         }
 
@@ -40,7 +40,7 @@
             font-family: var(--font-family-primary);
             background-color: var(--color-background);
             color: var(--color-text-primary);
-            line-height: 1.6;
+            line-height: 1.7;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -69,11 +69,11 @@
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(18, 18, 18, 0.8);
             backdrop-filter: blur(10px);
             z-index: 1000;
             padding: 16px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid var(--color-border);
         }
 
         #main-header .container {
@@ -83,9 +83,15 @@
         }
 
         .logo {
-            height: 45px;
+            height: 55px;
             width: auto;
+            mix-blend-mode: multiply; /* Efeito para remover o fundo branco */
         }
+        
+        body:not(.scrolled) .logo {
+             mix-blend-mode: normal; /* Remove o efeito quando no topo */
+        }
+
 
         #main-nav ul {
             list-style: none;
@@ -110,7 +116,7 @@
             padding: 12px 28px;
             border: none;
             border-radius: var(--border-radius);
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -119,14 +125,14 @@
 
         .btn-primary {
             background-color: var(--color-primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(10, 116, 255, 0.3);
+            color: var(--color-background);
+            box-shadow: 0 4px 15px rgba(0, 209, 178, 0.2);
         }
 
         .btn-primary:hover {
             background-color: var(--color-primary-dark);
             transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(10, 116, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 209, 178, 0.3);
         }
         
         /* --- SEÇÃO HERO --- */
@@ -134,35 +140,38 @@
             padding-top: 160px;
             padding-bottom: 120px;
             text-align: center;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/hero-background.png');
+            background-image: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 1)), url('images/hero-background.png');
             background-size: cover;
             background-position: center;
-            color: var(--color-text-on-dark);
+            color: var(--color-text-primary);
         }
         
         #home-hero h1 {
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             font-weight: 900;
             margin-bottom: 16px;
             line-height: 1.1;
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
         }
         
         #home-hero p {
             font-size: 1.25rem;
             max-width: 700px;
             margin: 0 auto 32px;
-            opacity: 0.9;
+            color: var(--color-text-secondary);
         }
         
         /* --- SEÇÕES GERAIS --- */
         .section {
-            padding: 80px 0;
+            padding: 100px 0;
+            border-bottom: 1px solid var(--color-border);
+            position: relative;
+            overflow: hidden;
         }
         
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 700;
             margin-bottom: 16px;
         }
@@ -176,6 +185,11 @@
         }
         
         /* --- SEÇÃO DE FEATURES --- */
+        #features {
+             background-image: url('images/fundo-palavras.PNG');
+             background-size: cover;
+             background-repeat: no-repeat;
+        }
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -183,19 +197,29 @@
         }
         
         .feature-card {
-            background-color: var(--color-background);
+            background-color: var(--color-surface);
             padding: 32px;
             border-radius: var(--border-radius);
-            border: 1px solid #eee;
+            border: 1px solid var(--color-border);
             text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
         }
 
         .feature-card .icon {
-            display: inline-block;
-            padding: 16px;
-            background-color: var(--color-surface);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background-color: rgba(0, 209, 178, 0.1);
             border-radius: 50%;
             margin-bottom: 24px;
+            color: var(--color-primary);
         }
         
         .feature-card h3 {
@@ -208,27 +232,44 @@
         }
 
         /* --- SEÇÃO "COMO FUNCIONA" --- */
-        #how-it-works {
-            background-color: var(--color-surface);
-        }
-
         .steps-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 32px;
             text-align: center;
+            position: relative;
+        }
+        
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: repeating-linear-gradient(90deg, var(--color-border), var(--color-border) 4px, transparent 4px, transparent 10px);
+            z-index: 0;
+        }
+
+        .step-card {
+            background-color: var(--color-surface);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-border);
+            z-index: 1;
         }
 
         .step-card .step-number {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--color-primary);
+            background-color: var(--color-background);
             border: 2px solid var(--color-primary);
             border-radius: 50%;
             width: 50px;
             height: 50px;
             line-height: 46px;
-            margin: 0 auto 24px;
+            margin: -57px auto 24px;
         }
 
         .step-card h3 {
@@ -241,6 +282,10 @@
         }
         
         /* --- SEÇÃO DEPOIMENTOS --- */
+        #testimonials {
+            background-image: url('images/fundo-geometrico.png');
+            background-size: cover;
+        }
         .testimonials-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -248,14 +293,17 @@
         }
         
         .testimonial-card {
-            background-color: var(--color-surface);
+            background-color: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(5px);
             padding: 32px;
             border-radius: var(--border-radius);
+            border: 1px solid var(--color-border);
         }
         
         .testimonial-card p {
             font-style: italic;
             margin-bottom: 24px;
+            font-size: 1.1rem;
         }
         
         .testimonial-author {
@@ -269,6 +317,7 @@
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid var(--color-primary);
         }
         
         .testimonial-author h4 {
@@ -279,12 +328,18 @@
             font-size: 0.9rem;
             color: var(--color-text-secondary);
         }
+
+        /* --- SEÇÃO CTA --- */
+        #cta {
+            background-color: var(--color-surface);
+            text-align: center;
+        }
         
         /* --- FOOTER --- */
         footer {
             padding: 40px 0;
-            background-color: var(--color-text-primary);
-            color: var(--color-text-on-dark);
+            background-color: #000;
+            color: var(--color-text-secondary);
             text-align: center;
         }
         
@@ -292,6 +347,12 @@
         @media (max-width: 992px) {
             .features-grid, .steps-grid, .testimonials-grid {
                 grid-template-columns: 1fr;
+            }
+            .steps-grid::before {
+                display: none;
+            }
+            .step-card .step-number {
+                margin-top: 0;
             }
         }
         
@@ -303,7 +364,7 @@
                 font-size: 2rem;
             }
             #main-nav {
-                display: none; /* Simplificando o header para mobile */
+                display: none;
             }
         }
     </style>
@@ -312,7 +373,6 @@
 
     <header id="main-header">
         <div class="container">
-            <!-- O logo agora é buscado da pasta 'images' -->
             <img src="images/logo.png" alt="UnderPro AI Logo" class="logo">
             <nav id="main-nav">
                 <ul>
@@ -334,7 +394,6 @@
             </div>
         </section>
         
-        <!-- SEÇÃO DE DIFERENCIAIS (FEATURES) -->
         <section id="features" class="section">
             <div class="container">
                 <h2 class="section-title reveal">Uma Plataforma Completa</h2>
@@ -365,7 +424,6 @@
             </div>
         </section>
 
-        <!-- NOVA SEÇÃO "COMO FUNCIONA" -->
         <section id="how-it-works" class="section">
             <div class="container">
                 <h2 class="section-title reveal">Comece em 3 Passos Simples</h2>
@@ -390,7 +448,6 @@
             </div>
         </section>
         
-        <!-- NOVA SEÇÃO DEPOIMENTOS -->
         <section id="testimonials" class="section">
             <div class="container">
                 <h2 class="section-title reveal">O que nossos membros dizem</h2>
@@ -419,9 +476,16 @@
                 </div>
             </div>
         </section>
+
+        <section id="cta" class="section">
+            <div class="container reveal">
+                <h2 class="section-title">Pronto para Apostar com Inteligência?</h2>
+                <p class="section-subtitle">Junte-se a centenas de investidores esportivos que estão usando dados para transformar seus resultados. O acesso às dicas gratuitas é imediato.</p>
+                <a href="#" class="btn btn-primary">Criar Conta Gratuita</a>
+            </div>
+        </section>
     </main>
 
-    <!-- FOOTER -->
     <footer>
         <div class="container">
             <p>&copy; 2024 UnderPro AI. Todos os direitos reservados.</p>
@@ -429,25 +493,30 @@
     </footer>
 
     <script>
-        // Script para a animação de scroll
         function revealOnScroll() {
             var reveals = document.querySelectorAll('.reveal');
             for (var i = 0; i < reveals.length; i++) {
                 var windowHeight = window.innerHeight;
                 var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 150;
+                var elementVisible = 100;
 
                 if (elementTop < windowHeight - elementVisible) {
                     reveals[i].classList.add('active');
-                } else {
-                    reveals[i].classList.remove('active');
                 }
             }
         }
+        
+        function handleScroll() {
+            if (window.scrollY > 50) {
+                document.body.classList.add('scrolled');
+            } else {
+                document.body.classList.remove('scrolled');
+            }
+            revealOnScroll();
+        }
 
-        window.addEventListener('scroll', revealOnScroll);
-        // Revela os elementos que já estão visíveis no carregamento da página
-        revealOnScroll();
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Executa uma vez no carregamento
     </script>
 
 </body>
