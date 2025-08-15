@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Preditiva e Backtesting V18.18 - Alta Assertividade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tag {
+            padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 600;
+            font-size: 0.875rem; text-transform: uppercase; margin-left: 0.5rem;
+        }
+        .tag-apta { background-color: #dcfce7; color: #166534; }
+        .tag-inapta { background-color: #fee2e2; color: #991b1b; }
+        .tag-info { background-color: #e0e7ff; color: #3730a3; }
+        .tag-green { background-color: #16a34a; color: #ffffff; }
+        .tag-red { background-color: #dc2626; color: #ffffff; }
+        .tag-classic { background-color: #eab308; color: #ffffff; }
+        #loading-spinner {
+            border: 4px solid #f3f4f6; border-top: 4px solid #3b82f6;
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        details > summary { list-style: none; cursor: pointer; }
+        details > summary::-webkit-details-marker { display: none; }
+        details summary .arrow { transition: transform 0.2s; }
+        details[open] summary .arrow { transform: rotate(90deg); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Análise Preditiva e Backtesting (V18.18)</h1>
+            <p class="text-md text-gray-600 mt-2">Estratégia de alta assertividade com perfis refinados.</p>
+        </header>
+
+        <main>
+            <!-- TELA 1: Início -->
+            <div id="home-screen">
+                <details class="bg-white p-4 rounded-2xl shadow-lg mb-8 cursor-pointer">
+                    <summary class="font-semibold text-indigo-800 flex items-center text-lg">
+                        <span class="arrow text-indigo-400 mr-3 transition-transform transform">&#9654;</span>
+                        Visualizar Estratégia e Instruções de Uso
+                    </summary>
+                    <div class="mt-4 pt-4 border-t text-sm text-gray-700 space-y-6">
+                        
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Instruções de Uso do Aplicativo</h3>
+                            <ol class="list-decimal list-inside space-y-3 pl-2 text-base">
+                                <li>
+                                    <strong>Coletar os Dados:</strong>
+                                    <ul class="list-disc list-inside pl-4 mt-2 space-y-1 text-gray-600">
+                                        <li>Acesse o site <a href="https://fbref.com" target="_blank" class="text-indigo-600 hover:underline"><strong>Fbref.com</strong></a>.</li>
+                                        <li>Selecione o campeonato e a temporada de sua preferência.</li>
+                                        <li>No menu do campeonato, clique na opção <strong>"Scores & Fixtures"</strong> (Resultados e Calendários).</li>
+                                        <li>Na página com a tabela de jogos, clique com o <strong>botão direito do mouse</strong> sobre qualquer parte da tabela.</li>
+                                        <li>No menu que aparecer, selecione <strong>"Inspecionar"</strong> ou "Inspecionar Elemento".</li>
+                                        <li>Uma nova janela com o código HTML da página será aberta. Procure pela linha que começa com <code>&lt;table class="stats_table"...&gt;</code>.</li>
+                                        <li>Clique com o <strong>botão direito</strong> nessa linha, vá em <strong>"Copy"</strong> (Copiar) e depois clique em <strong>"Copy element"</strong> (Copiar elemento).</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Analisar os Dados:</strong>
+                                    <ul class="list-disc list-inside pl-4 mt-2 space-y-1 text-gray-600">
+                                        <li>Volte para este aplicativo.</li>
+                                        <li><strong>Cole o código</strong> que você copiou na caixa de texto abaixo.</li>
+                                        <li>Clique no botão <strong>"Iniciar Análise"</strong>. O app irá processar todos os jogos, prever os resultados da próxima rodada e preparar os dados para os relatórios.</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Explorar o Backtest:</strong>
+                                    <ul class="list-disc list-inside pl-4 mt-2 space-y-1 text-gray-600">
+                                        <li>Após a análise, você pode usar o seletor de rodadas para fazer um <strong>backtest</strong> de rodadas passadas e ver o desempenho da estratégia.</li>
+                                        <li>Use os botões <strong>"Gerar Relatório"</strong> para obter um resumo detalhado das análises, seja por rodada, completo, ou filtrando apenas por "Greens" ou "Reds".</li>
+                                        <li>Na seção <strong>"Aplicar Estratégia de Banca"</strong>, você pode simular como sua banca evoluiria aplicando a estratégia nos jogos do backtest completo.</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t">
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Estratégia V18.18 Detalhada (Análise Manual Otimizada)</h3>
+                            <p class="text-base mb-4">Uma partida é considerada <strong>Apta</strong> para o mercado de Menos de 3.5 Gols se atender à <strong>REGRA GLOBAL DE VETO</strong> e a <strong>TODAS</strong> as condições de <strong>PELO MENOS UM</strong> dos perfis abaixo. A análise sempre considera os <strong>últimos 5 jogos</strong> de cada time.</p>
+                            
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200 mb-4">
+                                <h4 class="font-bold text-lg text-red-900">Regra Global de Veto (Filtro de Segurança)</h4>
+                                <p class="text-sm text-gray-600 mb-2">Uma partida é imediatamente considerada <strong>INAPTA</strong>, independentemente dos perfis, se a seguinte condição for verdadeira:</p>
+                                <ul class="list-disc list-inside space-y-1 pl-2 mt-2">
+                                    <li><strong class="text-gray-900">Veto de xG:</strong> <code>xG Total Combinado (xGT) > 2.50</code>.</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-lg text-gray-800">Perfil 1: "A Muralha" (Ultra Defensivo)</h4>
+                                <p class="text-sm text-gray-600 mb-2">Ideal para jogos entre duas equipes com defesas muito sólidas e ataques pouco eficientes.</p>
+                                <ul class="list-disc list-inside space-y-1 pl-2">
+                                    <li><strong class="text-gray-900">Média Gols Sofridos (MGS) &lt; 1.0 (Ambos):</strong> Ambos os times devem sofrer, em média, menos de 1 gol por partida.</li>
+                                    <li><strong class="text-gray-900">Potencial Ofensivo (PO) &lt; 1.90 (Ambos):</strong> Ambos os times devem ter um potencial de ataque baixo.</li>
+                                    <li><strong class="text-gray-900">Filtro de Goleada:</strong> Máximo de <strong>1</strong> jogo com 4 ou mais gols no total (10 jogos combinados).</li>
+                                </ul>
+                            </div>
+                            <div class="mt-4">
+                                <h4 class="font-bold text-lg text-gray-800">Perfil 2: "Duelo Equilibrado"</h4>
+                                <p class="text-sm text-gray-600 mb-2">Busca por jogos onde as forças se equivalem e a consistência dos resultados aponta para um placar baixo.</p>
+                                 <ul class="list-disc list-inside space-y-1 pl-2">
+                                    <li><strong class="text-gray-900">Diferença MGS &lt; 0.40:</strong> A diferença entre a média de gols sofridos dos dois times deve ser pequena.</li>
+                                    <li><strong class="text-gray-900">Diferença PO &lt; 0.40:</strong> A diferença no potencial ofensivo também deve ser pequena.</li>
+                                    <li><strong class="text-gray-900">Soma do Desvio Padrão &le; 2.70:</strong> A soma da "inconstância" de placares dos dois times deve ser baixa.</li>
+                                    <li><strong class="text-gray-900">Filtro de Goleada:</strong> Máximo de <strong>2</strong> jogos com 4 ou mais gols no total nos últimos jogos combinados.</li>
+                                    <li><strong class="text-red-600">REFINADO: Soma das MGS &le; 2.40:</strong> Filtro de segurança para evitar jogos entre duas defesas medíocres.</li>
+                                </ul>
+                            </div>
+                             <div class="mt-4 bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h4 class="font-bold text-lg text-green-900">Perfil 3: "Favorito Controlado"</h4>
+                                <p class="text-sm text-gray-600 mb-2">Focado em jogos com um favorito claro, mas que não seja explosivo, contra um adversário com defesa minimamente competente.</p>
+                                 <ul class="list-disc list-inside space-y-1 pl-2 mt-2">
+                                    <li><strong class="text-gray-900">Diferença no PO > 0.50:</strong> Deve haver uma clara vantagem ofensiva para um dos times.</li>
+                                    <li><strong class="text-gray-900">PO do Azarão &lt; 1.40:</strong> O time mais fraco deve ter um potencial de ataque muito baixo.</li>
+                                    <li><strong class="text-gray-900">MGS do Favorito &lt; 1.20:</strong> O time favorito deve ter uma defesa sólida.</li>
+                                    <li><strong class="text-gray-900">APIA &le; 3.20:</strong> A tendência geral de gols deve ser baixa.</li>
+                                    <li><strong class="text-green-600">PO do Favorito &lt; 2.25:</strong> (REDUZIDO) Filtro para evitar favoritos com ataques "explosivos".</li>
+                                    <li><strong class="text-green-600">NOVO: MGS do Azarão &lt; 1.61:</strong> Filtro para evitar que o time mais fraco tenha uma defesa muito vulnerável.</li>
+                                </ul>
+                            </div>
+                            <div class="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <h4 class="font-bold text-lg text-blue-900">Perfil 4: "Ancorado na Defesa"</h4>
+                                <p class="text-sm text-gray-600 mb-2">Busca jogos onde pelo menos uma das equipes tem uma defesa de elite, capaz de controlar o jogo, sem ter um ataque excessivamente poderoso.</p>
+                                 <ul class="list-disc list-inside space-y-1 pl-2 mt-2">
+                                    <li><strong class="text-gray-900">MGS de um time &lt; 0.80:</strong> Pelo menos um dos times deve ter uma defesa muito forte (Time da Âncora).</li>
+                                    <li><strong class="text-gray-900">PO do Oponente &lt; 1.90:</strong> O ataque do adversário não pode ser muito forte.</li>
+                                    <li><strong class="text-gray-900">APIA &le; 2.90:</strong> A tendência geral do jogo deve ser de poucos gols.</li>
+                                    <li><strong class="text-red-600">REFINADO: Filtro de Goleada &le; 1:</strong> Perfil de defesa de elite não pode ter histórico recente de goleadas.</li>
+                                    <li><strong class="text-green-600">PO do Time da Âncora &lt; 2.10:</strong> (REDUZIDO) Filtro para evitar que a âncora seja um time com ataque explosivo.</li>
+                                    <li><strong class="text-green-600">MGS do Oponente &lt; 1.80:</strong> Filtro para evitar que a defesa de elite jogue contra uma defesa extremamente fraca.</li>
+                                </ul>
+                            </div>
+                            <div class="mt-4 bg-purple-50 p-4 rounded-lg border border-purple-200">
+                                <h4 class="font-bold text-lg text-purple-900">Perfil 5: "Oportunista"</h4>
+                                <p class="text-sm text-gray-600 mb-2">Captura valor em jogos onde a expectativa de gols (xG) é muito baixa e não há histórico de placares elásticos.</p>
+                                 <ul class="list-disc list-inside space-y-1 pl-2 mt-2">
+                                    <li><strong class="text-gray-900">xG Total Combinado &le; 2.20:</strong> Filtro principal que busca jogos com baixa expectativa de chances claras de gol.</li>
+                                    <li><strong class="text-gray-900">APIA &le; 2.80:</strong> Garante que a média geral de gols também seja contida.</li>
+                                    <li><strong class="text-gray-900">Filtro de Goleada:</strong> Máximo de <strong>0 jogos</strong> com 4 ou mais gols no total nos últimos jogos combinados. (MAIS RÍGIDO)</li>
+                                    <li><strong class="text-red-600">REFINADO: Soma do Desvio Padrão &le; 2.50:</strong> Filtro de segurança para evitar times com placares recentes muito voláteis.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
+                    <label for="htmlInput" class="block text-lg font-semibold mb-3 text-gray-700">1. Cole o Elemento HTML da Tabela Completa:</label>
+                    <textarea 
+                        id="htmlInput"
+                        rows="10"
+                        class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                        placeholder="Cole aqui o HTML da tabela <table class=&quot;stats_table...&quot;>...</table>"
+                    ></textarea>
+                    <button 
+                        id="loadDataBtn"
+                        class="mt-5 w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105"
+                    >
+                        Iniciar Análise
+                    </button>
+                </div>
+            </div>
+
+            <!-- TELA 2: Análise e Backtest -->
+            <div id="analysis-screen" class="hidden">
+                 <div class="mb-6">
+                    <button id="backToHomeBtn" class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300">
+                        &larr; Voltar ao Início
+                    </button>
+                </div>
+                <div id="results" class="space-y-8"></div>
+                <div id="backtest-section" class="space-y-8 mt-8">
+                    <div id="backtest-controls" class="bg-white p-6 rounded-2xl shadow-lg">
+                        <div class="grid md:grid-cols-2 gap-4 items-end">
+                            <div>
+                                <label for="roundSelector" class="block text-lg font-semibold mb-3 text-gray-700">Análise por Rodada</label>
+                                <select id="roundSelector" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></select>
+                            </div>
+                            <button id="generateReportBtn" class="w-full bg-gray-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-800">
+                                Relatório de Entradas (Aptas) da Rodada
+                            </button>
+                        </div>
+                        <div class="mt-6 pt-6 border-t space-y-3">
+                            <label class="block text-lg font-semibold mb-3 text-gray-700">Análise Completa</label>
+                            <button id="generateFullReportBtn" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700">
+                                Gerar Relatório de Entradas (Backtest)
+                            </button>
+                            <button id="generateFullDetailedReportBtn" class="w-full bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-600">
+                                Gerar Relatório Detalhado Completo (Todas as Rodadas)
+                            </button>
+                            <button id="generateGreensReportBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700">
+                                Gerar Relatório Apenas dos GREENS
+                            </button>
+                            <button id="generateRedsReportBtn" class="w-full bg-red-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-red-700">
+                                Gerar Relatório Apenas dos REDS
+                            </button>
+                        </div>
+                        <!-- SEÇÃO DE GESTÃO DE BANCA -->
+                        <div id="bankroll-strategy-section" class="mt-6 pt-6 border-t">
+                             <label class="block text-lg font-semibold mb-3 text-gray-700">Aplicar Estratégia Híbrida Adaptativa</label>
+                             <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                                 <div>
+                                     <label for="initialBankroll" class="block text-sm font-medium text-gray-600">Banca Inicial</label>
+                                     <input type="number" id="initialBankroll" value="100" class="w-full mt-1 p-2 border border-gray-300 rounded-lg">
+                                 </div>
+                                 <div>
+                                     <label for="averageOdd" class="block text-sm font-medium text-gray-600">Odd Média</label>
+                                     <input type="number" id="averageOdd" value="1.24" step="0.01" class="w-full mt-1 p-2 border border-gray-300 rounded-lg">
+                                 </div>
+                                 <div>
+                                     <label for="oddThreshold" class="block text-sm font-medium text-gray-600">Odd Limite</label>
+                                     <input type="number" id="oddThreshold" value="1.27" step="0.01" class="w-full mt-1 p-2 border border-gray-300 rounded-lg">
+                                 </div>
+                                 <div>
+                                     <label for="fixedStakePercentage" class="block text-sm font-medium text-gray-600">Stake Fixa %</label>
+                                     <input type="number" id="fixedStakePercentage" value="5" step="0.1" class="w-full mt-1 p-2 border border-gray-300 rounded-lg">
+                                 </div>
+                                 <button id="simulateBankrollBtn" class="w-full bg-yellow-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-yellow-600 lg:col-span-1">
+                                     Simular
+                                 </button>
+                             </div>
+                        </div>
+                    </div>
+                    <!-- Nova div para o gráfico -->
+                    <div id="bankroll-chart-container" class="bg-white p-6 rounded-2xl shadow-lg hidden">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800">Evolução da Banca</h3>
+                        <canvas id="bankrollChart"></canvas>
+                    </div>
+                    <div id="backtest-results"></div>
+                </div>
+            </div>
+
+            <!-- TELA 3: Relatório -->
+            <div id="report-screen" class="hidden">
+                <div class="mb-6">
+                    <button id="backToAnalysisBtn" class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300">
+                        &larr; Voltar para Análise
+                    </button>
+                </div>
+                <div id="report-output">
+                    <textarea id="reportText" rows="25" class="w-full p-3 font-mono text-xs bg-gray-100 border border-gray-300 rounded-lg"></textarea>
+                    <button id="copyReportBtn" class="mt-2 w-full bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600">Copiar Relatório</button>
+                </div>
+            </div>
+            
+            <!-- Elemento de Loading Global -->
+            <div id="loading" class="hidden flex-col items-center justify-center my-10">
+                <div id="loading-spinner"></div>
+                <p class="mt-3 text-gray-600 font-semibold">Analisando dados, por favor aguarde...</p>
+            </div>
+        </main>
+        
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>App de análise esportiva V18.18 com Análise por Perfis Otimizados.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- GLOBAL VARIABLES ---
+        let allGamesData = [];
+        let currentAnalysisData = [];
+        let fullBacktestResults = [];
+        let fullDetailedBacktestData = [];
+        let fullDetailedReportText = '';
+        let bankrollChartInstance = null;
+
+        // --- CORE FUNCTIONS ---
+        
+        function parseDateAndTime(game) {
+            try {
+                const time = game.time || '00:00';
+                return new Date(`${game.date}T${time}`);
+            } catch (e) {
+                console.error(`Erro ao parsear data para o jogo: ${game.homeTeam} vs ${game.awayTeam}`, e);
+                return new Date('invalid');
+            }
+        }
+
+        function parseAllGames(htmlString) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            const rows = doc.querySelectorAll('tbody > tr');
+            let games = [];
+            rows.forEach(row => {
+                if (row.classList.contains('thead') || row.classList.contains('spacer')) return;
+                const getStat = (statName) => row.querySelector(`[data-stat="${statName}"]`)?.innerText.trim() || '';
+                
+                const dateElement = row.querySelector('[data-stat="date"] a');
+                const date = dateElement ? dateElement.textContent.trim() : getStat('date');
+                const time = getStat('start_time').split(' ')[0]; 
+
+                const homeTeam = getStat('home_team');
+                const awayTeam = getStat('away_team');
+                if (!homeTeam || !awayTeam || !date) return;
+
+                const score = getStat('score');
+                const game = {
+                    wk: parseInt(getStat('gameweek'), 10) || null,
+                    date: date,
+                    time: time,
+                    homeTeam,
+                    awayTeam,
+                    score,
+                    homeGoals: score && score.includes('–') ? parseInt(score.split('–')[0], 10) : null,
+                    awayGoals: score && score.includes('–') ? parseInt(score.split('–')[1], 10) : null,
+                    homeXg: parseFloat(getStat('home_xg')) || 0,
+                    awayXg: parseFloat(getStat('away_xg')) || 0,
+                };
+                
+                game.timestamp = parseDateAndTime(game);
+                
+                if (game.timestamp.toString() !== 'Invalid Date') {
+                    games.push(game);
+                }
+            });
+            return games.sort((a, b) => a.timestamp - b.timestamp);
+        }
+
+
+        function calculateMetrics(games, teamName) {
+            let golsFeitosList = [], golsSofridosList = [], golsPartidaTotalList = [], xGProList = [];
+            
+            games.forEach(game => {
+                golsPartidaTotalList.push(game.homeGoals + game.awayGoals);
+                if (game.homeTeam === teamName) {
+                    golsFeitosList.push(game.homeGoals);
+                    golsSofridosList.push(game.awayGoals);
+                    xGProList.push(game.homeXg);
+                } else {
+                    golsFeitosList.push(game.awayGoals);
+                    golsSofridosList.push(game.homeGoals);
+                    xGProList.push(game.awayXg);
+                }
+            });
+
+            const sum = arr => arr.reduce((a, b) => a + b, 0);
+            const n = games.length;
+            if (n === 0) return {};
+
+            const calculateStdDev = (arr) => {
+                if (n < 2) return 0;
+                const mean = sum(arr) / n;
+                const variance = sum(arr.map(val => (val - mean) ** 2)) / n;
+                return Math.sqrt(variance);
+            };
+
+            return {
+                media_gols_partida: sum(golsPartidaTotalList) / n,
+                media_gols_sofridos: sum(golsSofridosList) / n,
+                media_gols_feitos: sum(golsFeitosList) / n,
+                xG_medio_pro: sum(xGProList) / n,
+                desvio_padrao_gols_totais: calculateStdDev(golsPartidaTotalList),
+            };
+        }
+        
+        function formatGameHistoryForReport(games, teamName) {
+            if (!games || games.length === 0) {
+                return `  Histórico de ${teamName} não disponível.\n`;
+            }
+            let historyText = `\n  Últimos ${games.length} jogos de ${teamName}:\n`;
+            games.forEach(game => {
+                const opponent = game.homeTeam === teamName ? game.awayTeam : game.homeTeam;
+                const location = game.homeTeam === teamName ? '(C)' : '(F)';
+                historyText += `    - ${game.date}: vs ${opponent} ${location} -> Placar: ${game.score} (xG: ${game.homeXg}–${game.awayXg})\n`;
+            });
+            return historyText;
+        }
+
+        function analyzeRound(matchesToAnalyze, historicalData) {
+            return matchesToAnalyze.map(match => {
+                const homeHistory = historicalData
+                    .filter(g => g.homeTeam === match.homeTeam || g.awayTeam === match.homeTeam)
+                    .slice(-5);
+
+                const awayHistory = historicalData
+                    .filter(g => g.homeTeam === match.awayTeam || g.awayTeam === match.awayTeam)
+                    .slice(-5);
+
+                if (homeHistory.length < 5 || awayHistory.length < 5) {
+                    return { ...match, result: 'Inapta', reason: 'Dados insuficientes (menos de 5 jogos no histórico)', profile: 'Nenhum' };
+                }
+
+                const homeMetrics = calculateMetrics(homeHistory, match.homeTeam);
+                const awayMetrics = calculateMetrics(awayHistory, match.awayTeam);
+                
+                const APIA = (homeMetrics.media_gols_partida + awayMetrics.media_gols_partida) / 2;
+                const xG_Total_Combinado = homeMetrics.xG_medio_pro + awayMetrics.xG_medio_pro;
+                const combined_std_dev = homeMetrics.desvio_padrao_gols_totais + awayMetrics.desvio_padrao_gols_totais;
+                const homePO = homeMetrics.media_gols_feitos + (homeMetrics.xG_medio_pro * 0.5);
+                const awayPO = awayMetrics.media_gols_feitos + (awayMetrics.xG_medio_pro * 0.5);
+                
+                const fullMetrics = {homeMetrics, awayMetrics, APIA, xG_Total_Combinado, homePO, awayPO, combined_std_dev, homeHistory, awayHistory};
+
+                // ===== INÍCIO DAS ALTERAÇÕES V18.18 =====
+                
+                // Regra Global de Veto (Filtro de Segurança)
+                if (xG_Total_Combinado > 2.50) {
+                    return { ...match, result: 'Inapta', reason: 'Veto de xG > 2.50', profile: 'Nenhum', metrics: fullMetrics };
+                }
+                
+                // ===== FIM DAS ALTERAÇÕES V18.18 =====
+
+                const last10Games = [...homeHistory, ...awayHistory];
+                const gamesWith4PlusGoals = last10Games.filter(g => (g.homeGoals + g.awayGoals) >= 4).length;
+
+                // Perfil 1: A Muralha
+                const wallConditions = {
+                    cond1: homeMetrics.media_gols_sofridos < 1.0 && awayMetrics.media_gols_sofridos < 1.0,
+                    cond2: homePO < 1.90 && awayPO < 1.90,
+                    cond3: gamesWith4PlusGoals <= 1
+                };
+                if (Object.values(wallConditions).every(Boolean)) {
+                    return finalizeAnalysis(match, 'A Muralha', fullMetrics);
+                }
+
+                // Perfil 2: Duelo Equilibrado
+                const balancedConditions = {
+                    cond1: Math.abs(homeMetrics.media_gols_sofridos - awayMetrics.media_gols_sofridos) < 0.40,
+                    cond2: Math.abs(homePO - awayPO) < 0.40,
+                    cond3: combined_std_dev <= 2.70,
+                    cond4: gamesWith4PlusGoals <= 2,
+                    cond5: (homeMetrics.media_gols_sofridos + awayMetrics.media_gols_sofridos) <= 2.40
+                };
+                if (Object.values(balancedConditions).every(Boolean)) {
+                    return finalizeAnalysis(match, 'Duelo Equilibrado', fullMetrics);
+                }
+
+                // Perfil 3: Favorito Controlado
+                let favoriteMetrics, underdogMetrics, favoritePO, underdogPO;
+                if (homePO > awayPO) {
+                    favoriteMetrics = homeMetrics; underdogMetrics = awayMetrics;
+                    favoritePO = homePO; underdogPO = awayPO;
+                } else {
+                    favoriteMetrics = awayMetrics; underdogMetrics = homeMetrics;
+                    favoritePO = awayPO; underdogPO = homePO;
+                }
+                
+                const favoriteConditions = {
+                    cond1: Math.abs(homePO - awayPO) > 0.50,
+                    cond2: underdogPO < 1.40,
+                    cond3: favoriteMetrics.media_gols_sofridos < 1.20,
+                    cond4: APIA <= 3.20,
+                    cond5: underdogMetrics.media_gols_sofridos < 1.61, // ALTERADO V18.18
+                    cond6: favoritePO < 2.25 // ALTERADO V18.18
+                };
+                 if (Object.values(favoriteConditions).every(Boolean)) {
+                    return finalizeAnalysis(match, 'Favorito Controlado', fullMetrics);
+                }
+
+                // Perfil 4: Ancorado na Defesa
+                let isAnchorProfile = false;
+                if (homeMetrics.media_gols_sofridos < 0.80) { // Time da casa como âncora
+                    const anchorHomeConditions = {
+                        cond1: awayPO < 1.90,
+                        cond2: APIA <= 2.90,
+                        cond3: gamesWith4PlusGoals <= 1,
+                        cond4: awayMetrics.media_gols_sofridos < 1.80,
+                        cond5: homePO < 2.10 // ALTERADO V18.18
+                    };
+                    if(Object.values(anchorHomeConditions).every(Boolean)) isAnchorProfile = true;
+                }
+                if (!isAnchorProfile && awayMetrics.media_gols_sofridos < 0.80) { // Time de fora como âncora
+                    const anchorAwayConditions = {
+                        cond1: homePO < 1.90,
+                        cond2: APIA <= 2.90,
+                        cond3: gamesWith4PlusGoals <= 1,
+                        cond4: homeMetrics.media_gols_sofridos < 1.80,
+                        cond5: awayPO < 2.10 // ALTERADO V18.18
+                    };
+                    if(Object.values(anchorAwayConditions).every(Boolean)) isAnchorProfile = true;
+                }
+                if (isAnchorProfile) {
+                     return finalizeAnalysis(match, 'Ancorado na Defesa', fullMetrics);
+                }
+                
+                // Perfil 5: Oportunista
+                const opportunistConditions = {
+                    cond1: xG_Total_Combinado <= 2.20,
+                    cond2: APIA <= 2.80,
+                    cond3: gamesWith4PlusGoals <= 0, // ALTERADO V18.18
+                    cond4: combined_std_dev <= 2.50
+                };
+                if (Object.values(opportunistConditions).every(Boolean)) {
+                    return finalizeAnalysis(match, 'Oportunista', fullMetrics);
+                }
+                
+                return { ...match, result: 'Inapta', reason: 'Não se encaixou em nenhum perfil', profile: 'Nenhum', metrics: fullMetrics };
+            });
+        }
+
+        function finalizeAnalysis(match, profile, metricsData) {
+            const isPastGame = match.homeGoals !== null;
+            let backtestResult = null;
+            if (isPastGame) {
+                const totalGoals = match.homeGoals + match.awayGoals;
+                backtestResult = totalGoals < 4 ? 'Green' : 'Red';
+            }
+            return { ...match, result: 'Apta', profile, metrics: metricsData, backtestResult };
+        }
+
+        function generateMetricsHtml(match) {
+            if (!match.metrics) return '<p>Métricas não disponíveis.</p>';
+
+            const { homeMetrics, awayMetrics, APIA, xG_Total_Combinado, homePO, awayPO, combined_std_dev } = match.metrics;
+
+            return `
+                <div class="space-y-3 text-xs">
+                    <p class="text-sm font-semibold ${match.result === 'Apta' ? 'text-indigo-700' : 'text-red-700'}">
+                        Perfil: ${match.profile || 'Nenhum'}
+                        ${match.result === 'Inapta' ? ` | Motivo: ${match.reason}` : ''}
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 p-2 bg-gray-100 rounded-md text-center">
+                        <div><strong>APIA (Média Gols):</strong> ${APIA.toFixed(2)}</div>
+                        <div><strong>xG Total:</strong> ${xG_Total_Combinado.toFixed(2)}</div>
+                        <div><strong>Desvio Padrão Somado:</strong> ${combined_std_dev.toFixed(2)}</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-x-4 pt-2">
+                        <div class="space-y-1">
+                            <h5 class="font-bold text-center text-gray-800">${match.homeTeam} (Casa)</h5>
+                            <p><strong>PO (Pot. Ofensivo):</strong> ${homePO.toFixed(2)}</p>
+                            <p><strong>MGS (Média Gols Sofridos):</strong> ${homeMetrics.media_gols_sofridos.toFixed(2)}</p>
+                            <p><strong>xG Médio Pró:</strong> ${homeMetrics.xG_medio_pro.toFixed(2)}</p>
+                            <p><strong>Desvio Padrão:</strong> ${homeMetrics.desvio_padrao_gols_totais.toFixed(2)}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <h5 class="font-bold text-center text-gray-800">${match.awayTeam} (Fora)</h5>
+                            <p><strong>PO (Pot. Ofensivo):</strong> ${awayPO.toFixed(2)}</p>
+                            <p><strong>MGS (Média Gols Sofridos):</strong> ${awayMetrics.media_gols_sofridos.toFixed(2)}</p>
+                            <p><strong>xG Médio Pró:</strong> ${awayMetrics.xG_medio_pro.toFixed(2)}</p>
+                            <p><strong>Desvio Padrão:</strong> ${awayMetrics.desvio_padrao_gols_totais.toFixed(2)}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRoundAnalysis(analysis, roundIdentifier, title, isPrediction = false) {
+            const roundText = (typeof roundIdentifier === 'number') ? `(Rodada ${roundIdentifier})` : `(${roundIdentifier})`;
+            let html = `<div class="bg-white p-6 rounded-2xl shadow-lg border-2 border-indigo-200"><h2 class="text-xl font-bold mb-4 text-indigo-800">${title} ${roundText}</h2><div class="space-y-3">`;
+            
+            if (analysis.length === 0) {
+                html += `<p class="text-gray-500 text-center">Nenhuma partida encontrada para esta rodada.</p>`;
+            }
+
+            analysis.forEach(match => {
+                const tagClass = match.result === 'Apta' ? 'tag-apta' : 'tag-inapta';
+                const tagText = match.result;
+                let backtestTag = '';
+                if(match.backtestResult) {
+                    backtestTag = `<span class="tag ${match.backtestResult === 'Green' ? 'tag-green' : 'tag-red'}">${match.backtestResult}</span>`;
+                }
+                const scoreDisplay = isPrediction ? 'vs' : match.score;
+
+                html += `<details class="bg-gray-50 rounded-lg border border-gray-200">
+                                  <summary class="p-4 flex justify-between items-center">
+                                      <div class="flex items-center flex-wrap">
+                                          <span class="arrow text-gray-400 mr-3">&#9654;</span>
+                                          <span class="font-semibold">${match.homeTeam} ${scoreDisplay} ${match.awayTeam}</span>
+                                      </div>
+                                      <div class="flex-shrink-0">${backtestTag}<span class="tag ${tagClass}">${tagText}</span></div>
+                                  </summary>
+                                  <div class="p-4 border-t border-gray-200">
+                                      ${generateMetricsHtml(match)}
+                                  </div>
+                             </details>`;
+            });
+            html += `</div></div>`;
+            return html;
+        }
+        
+        function displayError(message) {
+            const currentScreen = document.querySelector('main > div:not(.hidden)');
+            const existingError = currentScreen.querySelector('.error-message');
+            if (existingError) existingError.remove();
+
+            const errorDiv = document.createElement('div');
+            errorDiv.className = "error-message bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg my-4";
+            errorDiv.setAttribute('role', 'alert');
+            errorDiv.innerHTML = `<p class="font-bold">Ocorreu um Erro!</p><p>${message}</p>`;
+            currentScreen.prepend(errorDiv);
+        }
+        
+        function renderBankrollChart(data) {
+            const ctx = document.getElementById('bankrollChart').getContext('2d');
+            
+            if (bankrollChartInstance) {
+                bankrollChartInstance.destroy();
+            }
+
+            bankrollChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.bet_index),
+                    datasets: [{
+                        label: 'Evolução da Banca',
+                        data: data.map(d => d.bankroll),
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                        fill: true,
+                        tension: 0.1,
+                        pointBackgroundColor: data.map(d => d.backtestResult === 'Green' ? '#16a34a' : (d.backtestResult === 'Red' ? '#dc2626' : '#6b7280')),
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: (context) => `Aposta #${context[0].label}`,
+                                label: (context) => {
+                                    const pointData = data[context.dataIndex];
+                                    return [
+                                        `Banca: R$${pointData.bankroll.toFixed(2)}`,
+                                        `Partida: ${pointData.homeTeam} vs ${pointData.awayTeam}`,
+                                        `Placar: ${pointData.score}`,
+                                        `Perfil: ${pointData.profile}`,
+                                        `Resultado: ${pointData.backtestResult}`,
+                                        `Stake: R$${pointData.stake.toFixed(2)}`,
+                                        `Tipo: ${pointData.betType}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Número da Aposta', color: '#4b5563' }, grid: { display: false } },
+                        y: { title: { display: true, text: 'Valor da Banca (R$)', color: '#4b5563' }, beginAtZero: false, grid: { color: '#e5e7eb' } }
+                    }
+                }
+            });
+        }
+        
+        // --- EVENT LISTENERS & APP INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const screens = {
+                home: document.getElementById('home-screen'),
+                analysis: document.getElementById('analysis-screen'),
+                report: document.getElementById('report-screen')
+            };
+            const loadingDiv = document.getElementById('loading');
+            const bankrollChartContainer = document.getElementById('bankroll-chart-container');
+
+            function showScreen(screenName) {
+                Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+                if(screens[screenName]) {
+                    screens[screenName].classList.remove('hidden');
+                }
+                window.scrollTo(0, 0);
+            }
+
+            function runFullBacktestInBackground() {
+                const pastGames = allGamesData.filter(g => g.score && g.score.includes('–'));
+                const playedGamesWithWk = pastGames.filter(g => g.wk && !isNaN(g.wk)).length;
+                const hasRounds = pastGames.length > 0 && (playedGamesWithWk / pastGames.length) > 0.8;
+
+                let allAptaMatches = [];
+                let allMatchesAnalysis = [];
+
+                if (hasRounds) {
+                    console.log("Executando backtest em modo de Rodadas.");
+                    const completedRounds = [...new Set(pastGames.map(g => g.wk))].filter(wk => wk && wk >= 6).sort((a, b) => a - b);
+                    if (completedRounds.length === 0) {
+                        console.log("Nenhuma rodada completa para backtest em segundo plano.");
+                        fullBacktestResults = [];
+                        fullDetailedBacktestData = [];
+                        return;
+                    }
+                    
+                    completedRounds.forEach(wk => {
+                        const historicalData = allGamesData.filter(g => g.wk < wk && g.score && g.score.includes('–'));
+                        const matchesToBacktest = allGamesData.filter(g => g.wk === wk && g.score && g.score.includes('–'));
+                        if (matchesToBacktest.length === 0) return;
+                        const analysisResults = analyzeRound(matchesToBacktest, historicalData);
+                        allAptaMatches.push(...analysisResults.filter(m => m.result === 'Apta'));
+                        allMatchesAnalysis.push(...analysisResults);
+                    });
+
+                } else {
+                    console.log("Executando backtest em modo de Datas.");
+                    if (pastGames.length < 30) {
+                        console.log("Dados históricos insuficientes para o backtest completo (menos de 30 jogos).");
+                        fullBacktestResults = [];
+                        fullDetailedBacktestData = [];
+                        return;
+                    }
+                    
+                    for (let i = 29; i < pastGames.length; i++) {
+                        const matchToBacktest = pastGames[i];
+                        const historicalData = pastGames.slice(0, i);
+                        const analysisResult = analyzeRound([matchToBacktest], historicalData)[0];
+                        
+                        allMatchesAnalysis.push(analysisResult);
+                        if (analysisResult && analysisResult.result === 'Apta') {
+                            allAptaMatches.push(analysisResult);
+                        }
+                    }
+                }
+
+                fullBacktestResults = allAptaMatches.sort((a, b) => a.timestamp - b.timestamp);
+                fullDetailedBacktestData = allMatchesAnalysis.sort((a, b) => a.timestamp - b.timestamp);
+                console.log(`Backtest em segundo plano concluído. ${fullBacktestResults.length} partidas aptas e ${fullDetailedBacktestData.length} totais analisadas.`);
+            }
+
+            function generateFullDetailedReportText() {
+                if (fullDetailedBacktestData.length === 0) {
+                    fullDetailedReportText = "Nenhum dado de backtest detalhado foi gerado. Verifique se há rodadas suficientes no campeonato.";
+                    return;
+                }
+
+                let report = `--- RELATÓRIO DETALHADO COMPLETO V18.18 ---\n\n`;
+                let currentWk = -1;
+
+                fullDetailedBacktestData.forEach(match => {
+                    if (match.wk && match.wk !== currentWk) {
+                        currentWk = match.wk;
+                        report += `\n\n--- RODADA ${currentWk} ---\n\n`;
+                    }
+                    report += `==================================================\n`;
+                    report += `PARTIDA: ${match.homeTeam} vs ${match.awayTeam} (Placar: ${match.score || 'N/A'})\n`;
+                    report += `ANÁLISE: ${match.result} (Perfil: ${match.profile || 'Nenhum'})\n`;
+                    if (match.result === 'Inapta') {
+                        report += `MOTIVO: ${match.reason}\n`;
+                    }
+                    report += `RESULTADO DO BACKTEST: ${match.backtestResult || 'N/A'}\n\n`;
+
+                    if (match.metrics) {
+                        const { homeMetrics, awayMetrics, APIA, xG_Total_Combinado, homePO, awayPO, combined_std_dev } = match.metrics;
+                        report += `MÉTRICAS GERAIS:\n`;
+                        report += `  - APIA (Média Gols): ${APIA.toFixed(2)}\n`;
+                        report += `  - xG Total Combinado: ${xG_Total_Combinado.toFixed(2)}\n`;
+                        report += `  - Desvio Padrão Somado: ${combined_std_dev.toFixed(2)}\n\n`;
+
+                        report += `MÉTRICAS - ${match.homeTeam} (Casa):\n`;
+                        report += `  - Potencial Ofensivo (PO): ${homePO.toFixed(2)}\n`;
+                        report += `  - Média Gols Sofridos (MGS): ${homeMetrics.media_gols_sofridos.toFixed(2)}\n`;
+                        report += `  - xG Médio Pró: ${homeMetrics.xG_medio_pro.toFixed(2)}\n`;
+                        report += `  - Desvio Padrão: ${homeMetrics.desvio_padrao_gols_totais.toFixed(2)}\n`;
+
+                        report += `MÉTRICAS - ${match.awayTeam} (Fora):\n`;
+                        report += `  - Potencial Ofensivo (PO): ${awayPO.toFixed(2)}\n`;
+                        report += `  - Média Gols Sofridos (MGS): ${awayMetrics.media_gols_sofridos.toFixed(2)}\n`;
+                        report += `  - xG Médio Pró: ${awayMetrics.xG_medio_pro.toFixed(2)}\n`;
+                        report += `  - Desvio Padrão: ${awayMetrics.desvio_padrao_gols_totais.toFixed(2)}\n`;
+
+                        if (match.metrics.homeHistory) {
+                            report += formatGameHistoryForReport(match.metrics.homeHistory, match.homeTeam);
+                        }
+                        if (match.metrics.awayHistory) {
+                            report += formatGameHistoryForReport(match.metrics.awayHistory, match.awayTeam);
+                        }
+                    } else {
+                        report += "Métricas não disponíveis para esta partida (dados insuficientes).\n"
+                    }
+                    report += `==================================================\n`;
+                });
+                fullDetailedReportText = report;
+            }
+
+
+            document.getElementById('loadDataBtn').addEventListener('click', () => {
+                const htmlString = document.getElementById('htmlInput').value;
+                const resultsDiv = document.getElementById('results');
+                const roundSelector = document.getElementById('roundSelector');
+                
+                resultsDiv.innerHTML = '';
+                document.getElementById('backtest-results').innerHTML = '';
+                roundSelector.innerHTML = '';
+                fullBacktestResults = [];
+                fullDetailedBacktestData = [];
+                fullDetailedReportText = '';
+        
+                if (!htmlString.trim()) {
+                    displayError('Por favor, insira o conteúdo HTML da tabela.');
+                    return;
+                }
+        
+                loadingDiv.classList.remove('hidden');
+                screens.home.classList.add('hidden');
+        
+                setTimeout(() => {
+                    try {
+                        allGamesData = parseAllGames(htmlString);
+                        if (allGamesData.length === 0) throw new Error("Nenhum jogo encontrado no HTML fornecido.");
+                
+                        const pastGames = allGamesData.filter(g => g.score && g.score.includes('–'));
+                        const futureGames = allGamesData.filter(g => !g.score || !g.score.includes('–'));
+                        if (pastGames.length === 0) throw new Error("Nenhum jogo com placar encontrado. Não é possível fazer a análise.");
+
+                        const playedGamesWithWk = pastGames.filter(g => g.wk && !isNaN(g.wk)).length;
+                        const hasRounds = (playedGamesWithWk / pastGames.length) > 0.8;
+
+                        if (futureGames.length > 0) {
+                            let matchesToAnalyze = [];
+                            let analysisTitle = '';
+                            let roundIdentifier = '';
+
+                            if (hasRounds) {
+                                analysisTitle = 'Análise Preditiva para a Próxima Rodada';
+                                const lastPlayedWk = Math.max(...pastGames.map(g => g.wk).filter(wk => wk));
+                                roundIdentifier = lastPlayedWk + 1;
+                                matchesToAnalyze = futureGames.filter(g => g.wk === roundIdentifier);
+                            } else {
+                                analysisTitle = 'Análise Preditiva para os Próximos Jogos';
+                                roundIdentifier = 'Futuros';
+                                const allTeams = [...new Set(allGamesData.flatMap(g => [g.homeTeam, g.awayTeam]))];
+                                const nextGamesMap = new Map();
+                                allTeams.forEach(team => {
+                                    const nextGame = futureGames.find(g => g.homeTeam === team || g.awayTeam === team);
+                                    if (nextGame) {
+                                        const gameId = `${nextGame.homeTeam}-${nextGame.awayTeam}-${nextGame.date}`;
+                                        if (!nextGamesMap.has(gameId)) {
+                                            nextGamesMap.set(gameId, nextGame);
+                                        }
+                                    }
+                                });
+                                matchesToAnalyze = Array.from(nextGamesMap.values());
+                            }
+
+                            if (matchesToAnalyze.length > 0) {
+                                const analysisResults = analyzeRound(matchesToAnalyze, pastGames);
+                                resultsDiv.innerHTML = renderRoundAnalysis(analysisResults, roundIdentifier, analysisTitle, true);
+                            } else {
+                                resultsDiv.innerHTML = `<p class="text-center font-semibold text-gray-700">Nenhuma partida futura encontrada para análise.</p>`;
+                            }
+                        } else {
+                            resultsDiv.innerHTML = `<p class="text-center font-semibold text-gray-700">Nenhuma partida futura encontrada.</p>`;
+                        }
+                
+                        if (hasRounds) {
+                            document.getElementById('generateReportBtn').style.display = 'block';
+                            roundSelector.style.display = 'block';
+                            roundSelector.disabled = false;
+                            const completedRounds = [...new Set(pastGames.map(g => g.wk))].filter(wk => wk && wk >= 6).sort((a, b) => a - b);
+                            if (completedRounds.length > 0) {
+                                roundSelector.innerHTML = '<option value="">Selecione uma rodada para backtest...</option>';
+                                completedRounds.forEach(wk => {
+                                    const option = document.createElement('option');
+                                    option.value = wk;
+                                    option.textContent = `Rodada ${wk}`;
+                                    roundSelector.appendChild(option);
+                                });
+                            }
+                        } else {
+                            document.getElementById('generateReportBtn').style.display = 'none';
+                            roundSelector.innerHTML = '<option value="">Backtest por rodada indisponível</option>';
+                            roundSelector.disabled = true;
+                        }
+                        
+                        runFullBacktestInBackground();
+                        generateFullDetailedReportText(); // Gera o relatório completo em segundo plano
+                        showScreen('analysis');
+                    } catch (error) {
+                        console.error("Erro ao carregar dados:", error);
+                        showScreen('home');
+                        displayError(error.message);
+                    } finally {
+                        loadingDiv.classList.add('hidden');
+                    }
+                }, 100);
+            });
+            
+            document.getElementById('roundSelector').addEventListener('change', (event) => {
+                const selectedWk = parseInt(event.target.value, 10);
+                const backtestResultsDiv = document.getElementById('backtest-results');
+                backtestResultsDiv.innerHTML = '';
+
+                if (!selectedWk) {
+                    currentAnalysisData = [];
+                    return;
+                };
+        
+                const historicalData = allGamesData.filter(g => g.wk < selectedWk && g.score && g.score.includes('–'));
+                const matchesToBacktest = allGamesData.filter(g => g.wk === selectedWk && g.score && g.score.includes('–'));
+        
+                if (matchesToBacktest.length === 0) {
+                   backtestResultsDiv.innerHTML = `<p class="text-yellow-600 text-center font-semibold p-4">A rodada ${selectedWk} não possui jogos com resultados na tabela fornecida.</p>`;
+                   currentAnalysisData = [];
+                   return;
+                }
+                
+                currentAnalysisData = analyzeRound(matchesToBacktest, historicalData);
+                backtestResultsDiv.innerHTML = renderRoundAnalysis(currentAnalysisData, selectedWk, 'Resultado do Backtest para a Rodada');
+            });
+            
+            function handleReportGeneration(generatorFn) {
+                loadingDiv.classList.remove('hidden');
+                screens.analysis.classList.add('hidden');
+                setTimeout(() => {
+                    try {
+                        generatorFn();
+                        showScreen('report');
+                    } catch (error) {
+                        console.error("Erro na geração de relatório:", error);
+                        showScreen('analysis');
+                        displayError(error.message);
+                    } finally {
+                        loadingDiv.classList.add('hidden');
+                    }
+                }, 100);
+            }
+
+            document.getElementById('generateReportBtn').addEventListener('click', () => {
+                handleReportGeneration(() => {
+                    const selectedWk = document.getElementById('roundSelector').value;
+                    if (!selectedWk || currentAnalysisData.length === 0) {
+                        throw new Error("Por favor, selecione uma rodada e execute o backtest primeiro.");
+                    }
+                    let report = `--- RELATÓRIO DE ENTRADAS (APTAS) V18.18 - RODADA ${selectedWk} ---\n\n`;
+                    const aptas = currentAnalysisData.filter(m => m.result === 'Apta');
+                    if (aptas.length > 0) {
+                        aptas.forEach(match => {
+                            report += `PARTIDA: ${match.homeTeam} vs ${match.awayTeam} (Placar: ${match.score})\n`;
+                            report += `ANÁLISE: ${match.result} (Perfil: ${match.profile || 'Nenhum'})\n`;
+                            report += `RESULTADO DO BACKTEST: ${match.backtestResult || 'N/A'}\n`;
+                            if (match.metrics && match.metrics.homeHistory) {
+                                report += formatGameHistoryForReport(match.metrics.homeHistory, match.homeTeam);
+                            }
+                            if (match.metrics && match.metrics.awayHistory) {
+                                report += formatGameHistoryForReport(match.metrics.awayHistory, match.awayTeam);
+                            }
+                            report += `--------------------------------------------------\n\n`;
+                        });
+                    } else {
+                        report += "Nenhuma partida foi considerada 'Apta' nesta rodada.\n";
+                    }
+                    const totalAptas = aptas.length;
+                    const totalGreens = aptas.filter(m => m.backtestResult === 'Green').length;
+                    const assertividade = totalAptas > 0 ? ((totalGreens / totalAptas) * 100).toFixed(2) : "0.00";
+                    let summary = `Resumo da Rodada ${selectedWk}:\nEntradas: ${totalAptas}\nGreens: ${totalGreens}\nReds: ${totalAptas - totalGreens}\nAssertividade: ${assertividade}%\n\n`;
+                    document.getElementById('reportText').value = summary + report;
+                });
+            });
+
+            document.getElementById('generateFullDetailedReportBtn').addEventListener('click', () => {
+                handleReportGeneration(() => {
+                    if (!fullDetailedReportText) {
+                        throw new Error("O relatório detalhado completo ainda não foi gerado. Por favor, aguarde o final da análise inicial.");
+                    }
+                    document.getElementById('reportText').value = fullDetailedReportText;
+                });
+            });
+
+            document.getElementById('generateFullReportBtn').addEventListener('click', () => {
+                handleReportGeneration(() => {
+                    if (fullBacktestResults.length === 0) {
+                         throw new Error("Não há dados de backtest suficientes. Isso geralmente ocorre se o campeonato tiver menos de 30 jogos jogados.");
+                    }
+                    
+                    const hasRounds = allGamesData.some(g => g.wk && !isNaN(g.wk));
+                    let reportPeriod = '';
+
+                    if (hasRounds) {
+                        const completedRounds = [...new Set(allGamesData.filter(g => g.score && g.score.includes('–')).map(g => g.wk))].filter(wk => wk && wk >= 6).sort((a, b) => a - b);
+                        if (completedRounds.length > 0) {
+                           reportPeriod = `RODADAS ANALISADAS: ${completedRounds[0]} a ${completedRounds[completedRounds.length - 1]}`;
+                        }
+                    } else {
+                        const firstDate = new Date(fullBacktestResults[0].timestamp).toLocaleDateString('pt-BR');
+                        const lastDate = new Date(fullBacktestResults[fullBacktestResults.length - 1].timestamp).toLocaleDateString('pt-BR');
+                        reportPeriod = `PERÍODO ANALISADO: ${firstDate} a ${lastDate}`;
+                    }
+                    
+                    const totalEntradas = fullBacktestResults.length;
+                    const totalGreens = fullBacktestResults.filter(m => m.backtestResult === 'Green').length;
+                    const assertividade = totalEntradas > 0 ? ((totalGreens / totalEntradas) * 100).toFixed(2) : "0.00";
+                    let summary = `--- RELATÓRIO COMPLETO DE BACKTEST V18.18 ---\n${reportPeriod}\n-------------------------------------------\nTotal de Entradas (Aptas): ${totalEntradas}\nTotal de Greens: ${totalGreens}\nTotal de Reds: ${totalEntradas - totalGreens}\nAssertividade: ${assertividade}%\n-------------------------------------------\n\n`;
+                    let fullReport = '';
+                    fullBacktestResults.forEach(match => {
+                         const identifier = hasRounds && match.wk ? `[R${match.wk}]` : `[${new Date(match.timestamp).toLocaleDateString('pt-BR')}]`;
+                         fullReport += `${identifier} ${match.homeTeam} ${match.score} ${match.awayTeam}\n Perfil: ${match.profile} | RESULTADO: ${match.backtestResult}\n`;
+                         if (match.metrics) {
+                             const { homeMetrics, awayMetrics, APIA, xG_Total_Combinado, homePO, awayPO } = match.metrics;
+                             fullReport += ` Métricas: APIA:${APIA.toFixed(2)} | xGT:${xG_Total_Combinado.toFixed(2)} | PO H:${homePO.toFixed(2)} A:${awayPO.toFixed(2)} | MGS H:${homeMetrics.media_gols_sofridos.toFixed(2)} A:${awayMetrics.media_gols_sofridos.toFixed(2)}\n`;
+                             if (match.metrics.homeHistory) {
+                                 fullReport += formatGameHistoryForReport(match.metrics.homeHistory, match.homeTeam);
+                             }
+                             if (match.metrics.awayHistory) {
+                                 fullReport += formatGameHistoryForReport(match.metrics.awayHistory, match.awayTeam);
+                             }
+                         }
+                         fullReport += '\n';
+                    });
+                    document.getElementById('reportText').value = summary + fullReport;
+                });
+            });
+
+            function generateFilteredReport(filterType, title) {
+                handleReportGeneration(() => {
+                    if (fullBacktestResults.length === 0) {
+                        throw new Error("Não há dados de backtest suficientes. Execute a análise completa primeiro.");
+                    }
+                    const filteredMatches = fullBacktestResults.filter(m => m.backtestResult === filterType);
+                    if (filteredMatches.length === 0) throw new Error(`Nenhuma partida com resultado '${filterType}' encontrada no backtest completo.`);
+                    
+                    const hasRounds = allGamesData.some(g => g.wk && !isNaN(g.wk));
+                    let report = '';
+                    filteredMatches.forEach(match => {
+                        const identifier = hasRounds && match.wk ? `--- RODADA ${match.wk} ---` : `--- ${new Date(match.timestamp).toLocaleDateString('pt-BR')} ---`;
+                        report += `${identifier}\nPARTIDA: ${match.homeTeam} vs ${match.awayTeam} (Placar: ${match.score})\nANÁLISE: ${match.result} (Perfil: ${match.profile || 'Nenhum'})\nRESULTADO DO BACKTEST: ${match.backtestResult}\n`;
+                        if (match.metrics) {
+                            const { homeMetrics, awayMetrics, APIA, xG_Total_Combinado, homePO, awayPO, combined_std_dev } = match.metrics;
+                            report += `MÉTRICAS DETALHADAS:\n  APIA: ${APIA.toFixed(2)}\n  xG Total Combinado: ${xG_Total_Combinado.toFixed(2)}\n  Potencial Ofensivo (PO): Casa ${homePO.toFixed(2)} | Fora ${awayPO.toFixed(2)}\n  Média Gols Sofridos: Casa ${homeMetrics.media_gols_sofridos.toFixed(2)} | Fora ${awayMetrics.media_gols_sofridos.toFixed(2)}\n  Desvio Padrão Somado: ${combined_std_dev.toFixed(2)}\n`;
+                            if (match.metrics.homeHistory) {
+                                report += formatGameHistoryForReport(match.metrics.homeHistory, match.homeTeam);
+                            }
+                            if (match.metrics.awayHistory) {
+                                report += formatGameHistoryForReport(match.metrics.awayHistory, match.awayTeam);
+                            }
+                        }
+                        report += `\n`;
+                    });
+                    const summary = `--- ${title.toUpperCase()} ---\nTotal de Partidas: ${filteredMatches.length}\n--------------------------------------------------\n\n`;
+                    document.getElementById('reportText').value = summary + report;
+                });
+            }
+            
+            // ===================================================================
+            //  INÍCIO DA LÓGICA DE SIMULAÇÃO DE BANCA (HÍBRIDA)
+            // ===================================================================
+            document.getElementById('simulateBankrollBtn').addEventListener('click', () => {
+                if (fullBacktestResults.length === 0) {
+                    displayError("Execute o 'Relatório Completo' primeiro para gerar os dados para a simulação.");
+                    return;
+                }
+                const initialBankroll = parseFloat(document.getElementById('initialBankroll').value);
+                const averageOdd = parseFloat(document.getElementById('averageOdd').value);
+                const oddThreshold = parseFloat(document.getElementById('oddThreshold').value);
+                const fixedStakePercentage = parseFloat(document.getElementById('fixedStakePercentage').value) / 100;
+
+
+                if (isNaN(initialBankroll) || initialBankroll <= 0 || isNaN(averageOdd) || averageOdd <= 1 || isNaN(oddThreshold) || isNaN(fixedStakePercentage)) {
+                    displayError("Por favor, insira valores numéricos válidos em todos os campos da estratégia de banca.");
+                    return;
+                }
+
+                const p = 0.807;
+                const q = 1 - p;
+                const b = averageOdd - 1;
+
+                const kellyValue = b * p - q;
+                const kellyFraction = (parseFloat(kellyValue.toFixed(10)) > 0) ? kellyValue / b : 0;
+                
+                let currentBankroll = initialBankroll;
+                const bankrollEvolutionData = [{ bet_index: 0, bankroll: initialBankroll, homeTeam: 'N/A', awayTeam: 'N/A', score: 'N/A', profile: 'Início', backtestResult: 'N/A', stake: 0, betType: 'Início' }];
+                let isSorosLevel = false;
+                let sorosStake = 0;
+                let betCount = 0;
+
+                fullBacktestResults.forEach((match) => {
+                    if (currentBankroll <= 0.01) return; 
+
+                    betCount++;
+                    let stake = 0;
+                    let betType = '';
+
+                    if (isSorosLevel) {
+                        stake = sorosStake;
+                        betType = 'Soros Nv. 1';
+                    } else {
+                        if (averageOdd <= oddThreshold) {
+                            stake = currentBankroll * fixedStakePercentage;
+                            betType = `Stake Fixa (${(fixedStakePercentage * 100).toFixed(1)}%)`;
+                        } else {
+                            if (kellyFraction <= 0) {
+                                displayError(`A estratégia Kelly não possui valor esperado positivo (EV+) com a odd ${averageOdd.toFixed(2)}. Simulação interrompida.`);
+                                bankrollEvolutionData.length = 0; 
+                                bankrollEvolutionData.push({ bet_index: 0, bankroll: initialBankroll });
+                                return;
+                            }
+                            
+                            const kellyStake = currentBankroll * kellyFraction;
+                            const minStakeForProfit = (currentBankroll * 0.01) / b;
+
+                            if (kellyStake < minStakeForProfit) {
+                                stake = minStakeForProfit;
+                                betType = `Kelly (Ajustado p/ 1%)`;
+                            } else {
+                                stake = kellyStake;
+                                betType = `Kelly (${(kellyFraction * 100).toFixed(2)}%)`;
+                            }
+                        }
+                    }
+                    
+                    if (currentBankroll < stake) {
+                        stake = currentBankroll;
+                    }
+
+                    const profit = stake * b;
+
+                    if (match.backtestResult === 'Green') {
+                        currentBankroll += profit;
+                        if (isSorosLevel) {
+                            isSorosLevel = false; 
+                        } else {
+                            sorosStake = stake + profit;
+                            isSorosLevel = true;
+                        }
+                    } else {
+                        currentBankroll -= stake;
+                        isSorosLevel = false; 
+                    }
+                    
+                    bankrollEvolutionData.push({
+                        bet_index: betCount,
+                        bankroll: currentBankroll,
+                        homeTeam: match.homeTeam,
+                        awayTeam: match.awayTeam,
+                        score: match.score,
+                        profile: match.profile,
+                        backtestResult: match.backtestResult,
+                        stake: stake,
+                        betType: betType
+                    });
+                });
+                
+                bankrollChartContainer.classList.remove('hidden');
+                renderBankrollChart(bankrollEvolutionData);
+            });
+            // ===================================================================
+            // FIM DA LÓGICA DE SIMULAÇÃO DE BANCA
+            // ===================================================================
+
+
+            document.getElementById('generateGreensReportBtn').addEventListener('click', () => generateFilteredReport('Green', 'Relatório de Todos os GREENS'));
+            document.getElementById('generateRedsReportBtn').addEventListener('click', () => generateFilteredReport('Red', 'Relatório de Todos os REDS'));
+            
+            document.getElementById('backToHomeBtn').addEventListener('click', () => showScreen('home'));
+            document.getElementById('backToAnalysisBtn').addEventListener('click', () => {
+                showScreen('analysis');
+                bankrollChartContainer.classList.add('hidden');
+            });
+
+            document.getElementById('copyReportBtn').addEventListener('click', () => {
+                const reportTextArea = document.getElementById('reportText');
+                reportTextArea.select();
+                try {
+                    document.execCommand('copy');
+                    const btn = document.getElementById('copyReportBtn');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Copiado!';
+                    setTimeout(() => { btn.textContent = originalText; }, 1500);
+                } catch (err) {
+                    console.error('Falha ao copiar o texto: ', err);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

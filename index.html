@@ -3,40 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UnderPro AI - Home</title>
+    <title>UnderPro AI - Análises Esportivas com IA</title>
     <!-- Importação de fontes do Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
     <style>
         /* --- DESIGN SYSTEM E VARIÁVEIS GLOBAIS --- */
         :root {
-            /* Paleta de Cores */
             --color-primary: #0A74FF;
             --color-primary-dark: #0056b3;
-            --color-background: #F8F9FA;
-            --color-surface: #FFFFFF;
-            --color-surface-dark: #E9ECEF;
+            --color-secondary: #00D1B2;
+            --color-background: #FFFFFF;
+            --color-surface: #F8F9FA;
             --color-text-primary: #212529;
             --color-text-secondary: #6C757D;
             --color-text-on-dark: #FFFFFF;
-            --color-border: #DEE2E6;
-            --color-success: #198754;
-            --color-danger: #DC3545;
-
-            /* Tipografia */
-            --font-family-primary: 'Inter', sans-serif;
-            --font-family-mono: 'Roboto Mono', monospace;
-
-            /* Espaçamento */
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-            --spacing-xl: 32px;
-
-            /* Outros */
             --border-radius: 12px;
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --font-family-primary: 'Inter', sans-serif;
         }
 
         /* --- ESTILOS GLOBAIS E RESET --- */
@@ -46,17 +32,35 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: var(--font-family-primary);
             background-color: var(--color-background);
             color: var(--color-text-primary);
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1140px;
             margin: 0 auto;
-            padding: 0 var(--spacing-md);
+            padding: 0 20px;
+        }
+        
+        /* --- ANIMAÇÃO DE SCROLL --- */
+        .reveal {
+            position: relative;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         /* --- ESTILOS DO HEADER --- */
@@ -68,7 +72,8 @@
             background-color: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             z-index: 1000;
-            padding: var(--spacing-md) 0;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
         #main-header .container {
@@ -78,7 +83,7 @@
         }
 
         .logo {
-            height: 50px; /* Altura ajustável para o logo */
+            height: 45px;
             width: auto;
         }
 
@@ -86,13 +91,13 @@
             list-style: none;
             display: flex;
             align-items: center;
-            gap: var(--spacing-lg);
+            gap: 32px;
         }
 
         #main-nav a {
             text-decoration: none;
             color: var(--color-text-secondary);
-            font-weight: 500;
+            font-weight: 600;
             transition: color 0.3s ease;
         }
 
@@ -102,7 +107,7 @@
 
         .btn {
             display: inline-block;
-            padding: 12px 24px;
+            padding: 12px 28px;
             border: none;
             border-radius: var(--border-radius);
             font-weight: 600;
@@ -115,84 +120,190 @@
         .btn-primary {
             background-color: var(--color-primary);
             color: white;
+            box-shadow: 0 4px 12px rgba(10, 116, 255, 0.3);
         }
 
         .btn-primary:hover {
             background-color: var(--color-primary-dark);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(10, 116, 255, 0.4);
         }
         
-        /* --- ESTILOS DA PÁGINA HOME --- */
+        /* --- SEÇÃO HERO --- */
         #home-hero {
-            padding-top: 120px; /* Mais espaço para o header */
-            padding-bottom: 60px;
+            padding-top: 160px;
+            padding-bottom: 120px;
             text-align: center;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('http://googleusercontent.com/file_content/2');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/hero-background.png');
             background-size: cover;
             background-position: center;
             color: var(--color-text-on-dark);
         }
         
         #home-hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: var(--spacing-md);
-            line-height: 1.2;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 16px;
+            line-height: 1.1;
+            letter-spacing: -1px;
         }
         
         #home-hero p {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             max-width: 700px;
-            margin: 0 auto var(--spacing-lg);
+            margin: 0 auto 32px;
             opacity: 0.9;
         }
-
-        .hero-buttons {
-             display: flex;
-             justify-content: center;
-             gap: var(--spacing-md);
-             margin-top: var(--spacing-lg);
-        }
-
+        
+        /* --- SEÇÕES GERAIS --- */
         .section {
-            padding: var(--spacing-xl) 0;
+            padding: 80px 0;
         }
         
         .section-title {
             text-align: center;
-            font-size: 2.2rem;
-            margin-bottom: var(--spacing-xl);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
         }
         
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto 64px;
+        }
+        
+        /* --- SEÇÃO DE FEATURES --- */
         .features-grid {
             display: grid;
-            gap: var(--spacing-lg);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
         }
         
         .feature-card {
-            background-color: var(--color-surface);
-            padding: var(--spacing-lg);
+            background-color: var(--color-background);
+            padding: 32px;
             border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #eee;
+            text-align: center;
         }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+
+        .feature-card .icon {
+            display: inline-block;
+            padding: 16px;
+            background-color: var(--color-surface);
+            border-radius: 50%;
+            margin-bottom: 24px;
         }
         
         .feature-card h3 {
-            color: var(--color-primary);
+            font-size: 1.25rem;
             margin-bottom: 8px;
         }
         
+        .feature-card p {
+            color: var(--color-text-secondary);
+        }
+
+        /* --- SEÇÃO "COMO FUNCIONA" --- */
+        #how-it-works {
+            background-color: var(--color-surface);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            text-align: center;
+        }
+
+        .step-card .step-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            line-height: 46px;
+            margin: 0 auto 24px;
+        }
+
+        .step-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        .step-card p {
+            color: var(--color-text-secondary);
+        }
+        
+        /* --- SEÇÃO DEPOIMENTOS --- */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+        
+        .testimonial-card {
+            background-color: var(--color-surface);
+            padding: 32px;
+            border-radius: var(--border-radius);
+        }
+        
+        .testimonial-card p {
+            font-style: italic;
+            margin-bottom: 24px;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .testimonial-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .testimonial-author h4 {
+            font-weight: 600;
+        }
+        
+        .testimonial-author span {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+        
+        /* --- FOOTER --- */
+        footer {
+            padding: 40px 0;
+            background-color: var(--color-text-primary);
+            color: var(--color-text-on-dark);
+            text-align: center;
+        }
+        
         /* --- RESPONSIVIDADE --- */
-        @media (min-width: 768px) {
-            .features-grid {
-                grid-template-columns: repeat(3, 1fr);
+        @media (max-width: 992px) {
+            .features-grid, .steps-grid, .testimonials-grid {
+                grid-template-columns: 1fr;
             }
+        }
+        
+        @media (max-width: 768px) {
             #home-hero h1 {
-                font-size: 3.5rem;
+                font-size: 2.5rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            #main-nav {
+                display: none; /* Simplificando o header para mobile */
             }
         }
     </style>
@@ -201,11 +312,13 @@
 
     <header id="main-header">
         <div class="container">
-            <img src="http://googleusercontent.com/file_content/1" alt="UnderPro AI Logo" class="logo">
+            <!-- O logo agora é buscado da pasta 'images' -->
+            <img src="images/logo.png" alt="UnderPro AI Logo" class="logo">
             <nav id="main-nav">
                 <ul>
-                    <li><a href="#home-hero">Home</a></li>
-                    <li><a href="#home-methodology">Metodologia</a></li>
+                    <li><a href="#features">Diferenciais</a></li>
+                    <li><a href="#how-it-works">Como Funciona</a></li>
+                    <li><a href="#testimonials">Depoimentos</a></li>
                     <li><a href="#" class="btn btn-primary">Entrar</a></li>
                 </ul>
             </nav>
@@ -213,38 +326,129 @@
     </header>
 
     <main id="app-container">
-        <div id="home-page">
-            <section id="home-hero">
-                <div class="container">
-                    <h1>Aposte com Dados, Não com Achismos.</h1>
-                    <p>Bem-vindo à UnderPro AI, a plataforma que utiliza a metodologia SEMPE para encontrar apostas com Valor Esperado Positivo (EV+). Pare de perder dinheiro e comece a investir no esporte.</p>
-                    <div class="hero-buttons">
-                        <a href="#" class="btn btn-primary">Ver Dicas Gratuitas</a>
+        <section id="home-hero">
+            <div class="container reveal">
+                <h1>Aposte com Dados, Não com Achismos.</h1>
+                <p>A UnderPro AI utiliza inteligência artificial para analisar milhares de dados e encontrar as melhores oportunidades no mercado de apostas esportivas.</p>
+                <a href="#" class="btn btn-primary">Ver Dicas Gratuitas Agora</a>
+            </div>
+        </section>
+        
+        <!-- SEÇÃO DE DIFERENCIAIS (FEATURES) -->
+        <section id="features" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">Uma Plataforma Completa</h2>
+                <p class="section-subtitle reveal">Nós não entregamos apenas dicas. Oferecemos as ferramentas e o conhecimento para você se tornar um investidor esportivo de sucesso.</p>
+                <div class="features-grid">
+                    <div class="feature-card reveal">
+                        <div class="icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10M18 20V4M6 20V16"/></svg>
+                        </div>
+                        <h3>Dados vs. Achismo</h3>
+                        <p>Nossa IA analisa milhares de pontos de dados para identificar padrões que o olho humano não vê. Adeus, "feeling". Olá, estatística.</p>
+                    </div>
+                    <div class="feature-card reveal">
+                        <div class="icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                        </div>
+                        <h3>Transparência Total</h3>
+                        <p>Mostramos nosso histórico de performance de forma agregada. Acreditamos que a confiança se constrói com resultados verificáveis.</p>
+                    </div>
+                    <div class="feature-card reveal">
+                        <div class="icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h3>Educação Financeira</h3>
+                        <p>Mais do que dicas, ensinamos gestão de banca e a mentalidade de longo prazo. Formamos investidores, não apostadores.</p>
                     </div>
                 </div>
-            </section>
-            
-            <section id="home-methodology" class="section">
-                <div class="container">
-                    <h2 class="section-title">Por que somos diferentes?</h2>
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <h3>📊 Dados vs. Achismo</h3>
-                            <p>Nossa IA analisa milhares de pontos de dados para identificar padrões que o olho humano não vê. Adeus, "feeling". Olá, estatística.</p>
+            </div>
+        </section>
+
+        <!-- NOVA SEÇÃO "COMO FUNCIONA" -->
+        <section id="how-it-works" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">Comece em 3 Passos Simples</h2>
+                <p class="section-subtitle reveal">Deixe a complexidade com a nossa IA e foque no que importa: seus resultados.</p>
+                <div class="steps-grid">
+                    <div class="step-card reveal">
+                        <div class="step-number">1</div>
+                        <h3>Crie sua Conta</h3>
+                        <p>Faça seu cadastro gratuito para ter acesso imediato às nossas dicas e análises iniciais.</p>
+                    </div>
+                    <div class="step-card reveal">
+                        <div class="step-number">2</div>
+                        <h3>Receba as Dicas</h3>
+                        <p>Nossa IA envia as melhores oportunidades diretamente para você em uma interface simples e intuitiva.</p>
+                    </div>
+                    <div class="step-card reveal">
+                        <div class="step-number">3</div>
+                        <h3>Gerencie sua Banca</h3>
+                        <p>Utilize nossa ferramenta de gestão para aplicar o método SEMPE e acompanhar seu progresso.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- NOVA SEÇÃO DEPOIMENTOS -->
+        <section id="testimonials" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">O que nossos membros dizem</h2>
+                <p class="section-subtitle reveal">A confiança da nossa comunidade é o nosso maior ativo.</p>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card reveal">
+                        <p>"Finalmente uma plataforma que trata apostas como investimento. A transparência e as ferramentas de gestão mudaram meu jogo completamente."</p>
+                        <div class="testimonial-author">
+                            <img src="https://placehold.co/100x100/EFEFEF/AAAAAA&text=JP" alt="Foto de João P.">
+                            <div>
+                                <h4>João P.</h4>
+                                <span>Membro Premium</span>
+                            </div>
                         </div>
-                        <div class="feature-card">
-                            <h3>🔍 Transparência Total</h3>
-                            <p>Mostramos nosso histórico de performance de forma agregada. Acreditamos que a confiança se constrói com resultados verificáveis.</p>
-                        </div>
-                        <div class="feature-card">
-                            <h3>🎓 Educação Financeira</h3>
-                            <p>Mais do que dicas, ensinamos gestão de banca e a mentalidade de longo prazo. Nosso objetivo é formar investidores esportivos, não apostadores.</p>
+                    </div>
+                    <div class="testimonial-card reveal">
+                        <p>"Eu era cético no início, mas os resultados falam por si. A análise de dados da UnderPro AI é de outro nível. Recomendo fortemente."</p>
+                        <div class="testimonial-author">
+                            <img src="https://placehold.co/100x100/EFEFEF/AAAAAA&text=MR" alt="Foto de Maria R.">
+                            <div>
+                                <h4>Maria R.</h4>
+                                <span>Membro Premium</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
     </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 UnderPro AI. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Script para a animação de scroll
+        function revealOnScroll() {
+            var reveals = document.querySelectorAll('.reveal');
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add('active');
+                } else {
+                    reveals[i].classList.remove('active');
+                }
+            }
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+        // Revela os elementos que já estão visíveis no carregamento da página
+        revealOnScroll();
+    </script>
 
 </body>
 </html>

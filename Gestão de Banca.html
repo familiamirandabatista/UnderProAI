@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Banca v2.5 - Híbrida Adaptativa</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .controls, .summary, .io-controls {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .io-controls {
+            grid-column: span 2;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            background-color: #3498db;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .io-controls button {
+            background-color: #1abc9c;
+        }
+        .io-controls button:hover {
+            background-color: #16a085;
+        }
+        #reset-button {
+            background-color: #e74c3c;
+        }
+        #reset-button:hover {
+            background-color: #c0392b;
+        }
+        #next-stake {
+            font-size: 28px;
+            font-weight: bold;
+            color: #27ae60;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .status {
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+        #history-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        #history-table th, #history-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        #history-table th {
+            background-color: #ecf0f1;
+        }
+        .green { background-color: #d4edda; color: #155724; }
+        .red { background-color: #f8d7da; color: #721c24; }
+        #file-input { display: none; }
+        
+        /* Estilos para os parâmetros fixos */
+        .fixed-params {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            border: 1px solid #bdc3c7;
+        }
+        .fixed-params h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-align: center;
+            color: #2c3e50;
+        }
+        .param-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Gestão de Banca Híbrida Adaptativa v2.5</h1>
+    
+    <div class="container">
+        <div class="controls">
+            <h2>Controles</h2>
+            <div>
+                <label for="bankroll">Banca Atual (R$):</label>
+                <input type="number" id="bankroll" value="100.00" step="0.01" onchange="updateBankrollFromInput()">
+            </div>
+            <div>
+                <label for="odd">Odd da Aposta:</label>
+                <input type="number" id="odd" value="1.24" step="0.01" oninput="updateDisplay()">
+            </div>
+            
+            <!-- Parâmetros Fixos da Estratégia -->
+            <div class="fixed-params">
+                <h3>Parâmetros Fixos</h3>
+                <div class="param-item">
+                    <span>Assertividade:</span>
+                    <strong>80.7%</strong>
+                </div>
+                <div class="param-item">
+                    <span>Odd Limite (p/ Kelly):</span>
+                    <strong>1.27</strong>
+                </div>
+                <div class="param-item">
+                    <span>Stake Fixa (Odds Baixas):</span>
+                    <strong>5%</strong>
+                </div>
+            </div>
+
+            <button onclick="addBet()">Registrar Nova Aposta</button>
+        </div>
+
+        <div class="summary">
+            <h2>Próxima Entrada</h2>
+            <div id="summary-content">
+                <div class="status" id="soros-status">Status: Entrada Padrão</div>
+                <label>Valor Recomendado:</label>
+                <div id="next-stake">R$ 5.00</div>
+            </div>
+        </div>
+
+        <div class="io-controls">
+             <button onclick="exportHistory()">Exportar Histórico (.json)</button>
+             <button onclick="document.getElementById('file-input').click()">Carregar Histórico</button>
+             <input type="file" id="file-input" accept=".json" onchange="importHistory(event)">
+             <button id="reset-button" onclick="resetHistory()">Reiniciar Histórico</button>
+        </div>
+    </div>
+
+    <h2>Histórico de Apostas</h2>
+    <table id="history-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Tipo</th>
+                <th>Stake (R$)</th>
+                <th>Odd</th>
+                <th>Resultado</th>
+                <th>Lucro/Prej. (R$)</th>
+                <th>Banca Final (R$)</th>
+            </tr>
+        </thead>
+        <tbody id="history-body">
+        </tbody>
+    </table>
+
+    <script>
+        // --- PARÂMETROS FIXOS DA ESTRATÉGIA ---
+        const ASSERTIVENESS = 0.807;          // 80.7%
+        const ODD_THRESHOLD = 1.27;           // Odd que define a mudança de estratégia
+        const FIXED_STAKE_PERCENTAGE = 0.05;  // 5%
+
+        let state = {
+            bankroll: 100.00,
+            isSorosActive: false,
+            sorosStake: 0,
+            history: []
+        };
+
+        document.addEventListener('DOMContentLoaded', loadState);
+
+        function updateBankrollFromInput() {
+            const bankrollInput = document.getElementById('bankroll');
+            const newBankroll = parseFloat(bankrollInput.value);
+
+            if (!isNaN(newBankroll) && newBankroll >= 0) {
+                if (confirm('Alterar a banca manualmente irá reiniciar qualquer ciclo de Soros em andamento. Deseja continuar?')) {
+                    state.bankroll = newBankroll;
+                    state.isSorosActive = false;
+                    state.sorosStake = 0;
+                    saveState();
+                    updateDisplay();
+                } else {
+                    bankrollInput.value = state.bankroll.toFixed(2);
+                }
+            } else {
+                alert('Por favor, insira um valor de banca válido.');
+                bankrollInput.value = state.bankroll.toFixed(2);
+            }
+        }
+
+        function getNextStake() {
+            if (state.isSorosActive) {
+                return { stake: state.sorosStake, type: 'Soros Nv. 1' };
+            }
+
+            const currentOdd = parseFloat(document.getElementById('odd').value);
+            
+            if (isNaN(currentOdd)) {
+                return { stake: 0, type: 'Inválido' };
+            }
+
+            if (currentOdd <= ODD_THRESHOLD) {
+                const stake = state.bankroll * FIXED_STAKE_PERCENTAGE;
+                return { stake: stake, type: `Stake Fixa (${(FIXED_STAKE_PERCENTAGE * 100).toFixed(1)}%)` };
+            } else {
+                const p = ASSERTIVENESS;
+                const q = 1 - p;
+                const b = currentOdd - 1;
+
+                const kellyValue = b * p - q;
+                if (parseFloat(kellyValue.toFixed(10)) <= 0) {
+                    return { stake: 0, type: 'Kelly (EV-)' };
+                }
+
+                const kellyFraction = kellyValue / b;
+                const kellyStake = state.bankroll * kellyFraction;
+                const minStakeForProfit = (state.bankroll * 0.01) / b;
+
+                if (kellyStake < minStakeForProfit) {
+                    return { stake: minStakeForProfit, type: 'Kelly (Ajustado p/ 1%)' };
+                } else {
+                    return { stake: kellyStake, type: `Kelly (${(kellyFraction * 100).toFixed(2)}%)` };
+                }
+            }
+        }
+        
+        function updateDisplay() {
+            document.getElementById('bankroll').value = state.bankroll.toFixed(2);
+            const nextBetInfo = getNextStake();
+            document.getElementById('next-stake').innerText = `R$ ${nextBetInfo.stake.toFixed(2)}`;
+            
+            const statusDiv = document.getElementById('soros-status');
+            if(state.isSorosActive) {
+                statusDiv.innerText = 'Status: Soros Nível 1';
+                statusDiv.style.color = '#e67e22';
+            } else {
+                statusDiv.innerText = `Status: ${nextBetInfo.type}`;
+                statusDiv.style.color = '#7f8c8d';
+            }
+        }
+
+        function renderHistory() {
+            const historyBody = document.getElementById('history-body');
+            historyBody.innerHTML = '';
+            state.history.forEach(bet => {
+                const row = historyBody.insertRow();
+                row.className = bet.profit > 0 ? 'green' : 'red';
+                row.innerHTML = `
+                    <td>${bet.id}</td>
+                    <td>${bet.type}</td>
+                    <td>${bet.stake.toFixed(2)}</td>
+                    <td>${bet.odd.toFixed(2)}</td>
+                    <td><span style="font-weight:bold;">${bet.profit > 0 ? 'Green' : 'Red'}</span></td>
+                    <td>${bet.profit > 0 ? '+' : ''}${bet.profit.toFixed(2)}</td>
+                    <td>${bet.finalBankroll.toFixed(2)}</td>
+                `;
+            });
+        }
+
+        function addBet() {
+            const odd = parseFloat(document.getElementById('odd').value);
+            if (isNaN(odd) || odd <= 1) {
+                alert('Por favor, insira uma odd válida (maior que 1).');
+                return;
+            }
+
+            const { stake, type } = getNextStake();
+
+            if (stake <= 0) {
+                alert('A aposta não tem valor esperado positivo (EV+) ou os parâmetros são inválidos. Nenhuma aposta será registrada.');
+                return;
+            }
+
+            if (stake > state.bankroll) {
+                if (!confirm('Atenção: A aposta é maior que a banca atual. Deseja continuar mesmo assim?')) {
+                    return;
+                }
+            }
+            
+            const betId = state.history.length + 1;
+            const newBet = { id: betId, type, stake, odd };
+            const historyBody = document.getElementById('history-body');
+            const row = historyBody.insertRow(0);
+            
+            row.innerHTML = `
+                <td>${newBet.id}</td>
+                <td>${newBet.type}</td>
+                <td>${newBet.stake.toFixed(2)}</td>
+                <td>${newBet.odd.toFixed(2)}</td>
+                <td>
+                    <button onclick='resolveBet(this.parentNode.parentNode, ${JSON.stringify(newBet)}, true)' style="background-color:#2ecc71; padding: 5px 10px; margin-right: 5px;">Green</button>
+                    <button onclick='resolveBet(this.parentNode.parentNode, ${JSON.stringify(newBet)}, false)' style="background-color:#e74c3c; padding: 5px 10px;">Red</button>
+                </td>
+                <td>-</td>
+                <td>-</td>
+            `;
+        }
+
+        function resolveBet(rowElement, betData, isWin) {
+            let profit;
+            
+            if (isWin) {
+                profit = betData.stake * (betData.odd - 1);
+                state.bankroll += profit;
+                if (state.isSorosActive) {
+                    state.isSorosActive = false;
+                    state.sorosStake = 0;
+                } else {
+                    state.isSorosActive = true;
+                    state.sorosStake = betData.stake + profit;
+                }
+            } else {
+                profit = -betData.stake;
+                state.bankroll += profit;
+                state.isSorosActive = false;
+                state.sorosStake = 0;
+            }
+
+            const resolvedBet = { ...betData, profit: profit, finalBankroll: state.bankroll };
+            state.history.unshift(resolvedBet);
+            
+            rowElement.remove();
+            renderHistory();
+            saveState();
+            updateDisplay();
+        }
+
+        function saveState() {
+            localStorage.setItem('bettingHistoryState_v2_5', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem('bettingHistoryState_v2_5');
+            if (savedState) {
+                state = JSON.parse(savedState);
+                if (state.history.length > 0) {
+                    alert('Histórico anterior carregado automaticamente!');
+                }
+            }
+            renderHistory();
+            updateDisplay();
+        }
+
+        function exportHistory() {
+            if (state.history.length === 0) {
+                alert("Não há histórico para exportar.");
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", `historico_banca_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function importHistory(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedState = JSON.parse(e.target.result);
+                    if ('bankroll' in importedState && 'history' in importedState) {
+                        if (confirm('Isso irá substituir o histórico atual. Deseja continuar?')) {
+                            state = importedState;
+                            saveState();
+                            renderHistory();
+                            updateDisplay();
+                            alert('Histórico importado com sucesso!');
+                        }
+                    } else { throw new Error("Formato inválido."); }
+                } catch (error) {
+                    alert('Erro ao carregar o arquivo. Verifique se o arquivo está no formato correto.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function resetHistory() {
+            if (confirm("ATENÇÃO: Isso apagará PERMANENTEMENTE todo o histórico e redefinirá a banca para R$ 100,00. Deseja continuar?")) {
+                state.bankroll = 100.00;
+                state.isSorosActive = false;
+                state.sorosStake = 0;
+                state.history = []; 
+                
+                saveState();
+                
+                renderHistory();
+                updateDisplay();
+                
+                alert("Histórico reiniciado com sucesso!");
+            }
+        }
+
+    </script>
+</body>
+</html>
