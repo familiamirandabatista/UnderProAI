@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnderPro AI - MVP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- DESIGN SYSTEM E VARIÁVEIS GLOBAIS --- */
+        :root {
+            /* Cores */
+            --color-primary: #0A74FF;
+            --color-primary-dark: #0056b3;
+            --color-background: #F8F9FA;
+            --color-surface: #FFFFFF;
+            --color-surface-dark: #E9ECEF;
+            --color-text-primary: #212529;
+            --color-text-secondary: #6C757D;
+            --color-border: #DEE2E6;
+            --color-success: #198754;
+            --color-danger: #DC3545;
+            --color-warning: #FFC107;
+
+            /* Tipografia */
+            --font-family-primary: 'Inter', sans-serif;
+            --font-family-mono: 'Roboto Mono', monospace;
+
+            /* Espaçamento */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+
+            /* Outros */
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- ESTILOS GLOBAIS E RESET --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+        }
+
+       .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* --- CLASSES DE UTILITÁRIOS --- */
+       .page {
+            padding-top: 80px; /* Espaço para o header fixo */
+            padding-bottom: var(--spacing-xl);
+        }
+
+       .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+       .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+       .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+        }
+        
+       .btn-secondary {
+            background-color: var(--color-surface-dark);
+            color: var(--color-text-primary);
+        }
+
+       .btn-secondary:hover {
+            background-color: #d3d9df;
+        }
+
+       .hidden {
+            display: none!important;
+        }
+
+        /* --- ESTILOS DO HEADER PRINCIPAL --- */
+        #main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--color-surface);
+            box-shadow: var(--box-shadow);
+            z-index: 1000;
+            padding: var(--spacing-md) 0;
+        }
+
+        #main-header.container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+       .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        #main-nav ul {
+            list-style: none;
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        #main-nav a {
+            text-decoration: none;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        #main-nav a:hover {
+            color: var(--color-primary);
+        }
+        
+        /* --- ESTILOS DA PÁGINA HOME --- */
+        #home-hero {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+        }
+        #home-hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: var(--spacing-md);
+        }
+        #home-hero p {
+            font-size: 1.2rem;
+            color: var(--color-text-secondary);
+            max-width: 700px;
+            margin: 0 auto var(--spacing-lg);
+        }
+        
+       .section {
+            padding: var(--spacing-xl) 0;
+        }
+       .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: var(--spacing-xl);
+        }
+       .features-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+        }
+       .feature-card {
+            background-color: var(--color-surface);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+       .feature-card h3 {
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* --- ESTILOS DAS PÁGINAS DE DICAS (CHAT) --- */
+       .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+        }
+       .chat-header {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+       .chat-messages {
+            flex-grow: 1;
+            padding: var(--spacing-md);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+       .chat-bubble {
+            background-color: var(--color-surface-dark);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            max-width: 80%;
+            align-self: flex-start;
+        }
+       .chat-bubble.tip-content {
+            white-space: pre-wrap;
+        }
+       .tip-meta {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+            margin-top: var(--spacing-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+       .tip-reactions button {
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+       .tip-reactions button:hover {
+            background-color: #d3d9df;
+        }
+
+       .chat-footer {
+            padding: var(--spacing-md);
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+        }
+
+        /* --- ESTILOS DAS PÁGINAS DE LOGIN/CADASTRO --- */
+       .auth-form-container {
+            max-width: 400px;
+            margin: var(--spacing-xl) auto;
+            padding: var(--spacing-lg);
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+       .auth-form-container h2 {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+       .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+       .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
+        }
+       .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+        }
+       .auth-form-container.btn {
+            width: 100%;
+        }
+       .auth-switch {
+            text-align: center;
+            margin-top: var(--spacing-md);
+        }
+       .auth-switch a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* --- ESTILOS DO APP DE GESTÃO --- */
+        #management-app-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+        }
+       .management-card {
+            background-color: var(--color-surface);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+       .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+       .stat-item h4 {
+            color: var(--color-text-secondary);
+            font-size: 1rem;
+        }
+       .stat-item p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: var(--font-family-mono);
+        }
+       .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-md);
+        }
+       .history-table th,.history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+       .history-table th {
+            background-color: var(--color-surface-dark);
+        }
+
+        /* --- MEDIA QUERIES PARA RESPONSIVIDADE --- */
+        @media (min-width: 768px) {
+           .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            #management-app-grid {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="container">
+            <a href="#" class="logo" data-page="home-page">UnderPro AI</a>
+            <nav id="main-nav">
+                </nav>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <div id="home-page" class="page"></div>
+
+        <div id="dicas-free-page" class="page hidden"></div>
+
+        <div id="login-page" class="page hidden"></div>
+        
+        <div id="register-page" class="page hidden"></div>
+
+        <div id="dicas-premium-page" class="page hidden"></div>
+
+        <div id="management-app-page" class="page hidden"></div>
+    </main>
+
+    <script>
+    // Envolvendo todo o código em uma IIFE para evitar poluição do escopo global
+    (function() {
+        // --- ESTADO DA APLICAÇÃO ---
+        const AppState = {
+            currentUser: null, // Objeto do usuário logado ou null
+            currentPage: 'home-page',
+        };
+
+        // --- BANCO DE DADOS MOCK ---
+        const mockUsers =;
+
+        const mockTips =;
+
+        let mockBankrollHistory = {
+            1: [
+                { betId: 'b1', odd: 1.90, stake: 50.00, result: 'win', profit: 45.00 },
+                { betId: 'b2', odd: 2.10, stake: 50.00, result: 'loss', profit: -50.00 },
+            ],
+            2:
+        };
+        
+        // --- FUNÇÕES DA "API" SIMULADA ---
+        // Pense passo a passo:
+        // 1. Criar uma função `login` que aceita email e senha.
+        // 2. Ela deve retornar uma Promise para simular uma chamada de rede.
+        // 3. Dentro da Promise, usar setTimeout para simular latência.
+        // 4. Procurar o usuário no array `mockUsers`.
+        // 5. Se encontrar e a senha bater, resolver a Promise com o objeto do usuário.
+        // 6. Se não, rejeitar a Promise com uma mensagem de erro.
+        function login(email, password) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const user = mockUsers.find(u => u.email === email && u.password === password);
+                    if (user) {
+                        // Não retornar a senha no objeto do usuário
+                        const { password,...userToReturn } = user;
+                        resolve(userToReturn);
+                    } else {
+                        reject('E-mail ou senha incorretos.');
+                    }
+                }, 500);
+            });
+        }
+        
+        function getFreeTips() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(mockTips.filter(tip => tip.type === 'free').sort((a, b) => b.timestamp - a.timestamp));
+                }, 300);
+            });
+        }
+
+        function getPremiumTips() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(mockTips.filter(tip => tip.type === 'premium').sort((a, b) => b.timestamp - a.timestamp));
+                }, 300);
+            });
+        }
+
+        function getBankrollHistory(userId) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(mockBankrollHistory[userId] ||);
+                }, 300);
+            });
+        }
+
+        // Pense passo a passo:
+        // 1. A função `saveBet` recebe o ID do usuário e os dados da aposta.
+        // 2. Simula uma chamada de API com Promise e setTimeout.
+        // 3. Lógica SEMPE simulada: o stake é calculado como 5% da banca atual.
+        // 4. O resultado é simulado aleatoriamente (50% win/loss).
+        // 5. O lucro/prejuízo é calculado.
+        // 6. A banca do usuário é atualizada.
+        // 7. A nova aposta é adicionada ao histórico.
+        // 8. Resolve a Promise com sucesso.
+        function saveBet(userId, betData) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const user = mockUsers.find(u => u.id === userId);
+                    if (!user) return reject('Usuário não encontrado.');
+
+                    // Lógica SEMPE simulada (cálculo de stake protegido no "backend")
+                    const stake = user.bankroll * 0.05; // 5% da banca
+                    
+                    const result = Math.random() < 0.5? 'win' : 'loss';
+                    const profit = result === 'win'? stake * (betData.odd - 1) : -stake;
+                    
+                    user.bankroll += profit;
+
+                    const newBet = {
+                        betId: `b${Date.now()}`,
+                        odd: betData.odd,
+                        stake: stake,
+                        result: result,
+                        profit: profit
+                    };
+
+                    if (!mockBankrollHistory[userId]) {
+                        mockBankrollHistory[userId] =;
+                    }
+                    mockBankrollHistory[userId].unshift(newBet);
+                    resolve({ success: true, newBankroll: user.bankroll });
+                }, 800);
+            });
+        }
+
+
+        // ### PARTE V: A LINHA DE MONTAGEM - IMPLEMENTAÇÃO SEQUENCIAL ###
+        
+        // --- RENDERIZAÇÃO E LÓGICA DA UI ---
+
+        // Função principal para navegar entre as páginas
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+            AppState.currentPage = pageId;
+            updateNav();
+        }
+
+        // Atualiza a barra de navegação com base no estado de login
+        function updateNav() {
+            const navContainer = document.querySelector('#main-nav');
+            let navLinks = `
+                <ul>
+                    <li><a href="#" data-page="home-page">Home</a></li>
+                    <li><a href="#" data-page="dicas-free-page">Dicas Free</a></li>
+            `;
+            if (AppState.currentUser) {
+                if (AppState.currentUser.subscriptionStatus === 'premium') {
+                    navLinks += `<li><a href="#" data-page="dicas-premium-page">Dicas Premium</a></li>`;
+                    navLinks += `<li><a href="#" data-page="management-app-page">Gestão de Banca</a></li>`;
+                }
+                navLinks += `<li><a href="#" id="logout-btn">Sair</a></li>`;
+            } else {
+                navLinks += `<li><a href="#" data-page="login-page" class="btn btn-primary">Entrar</a></li>`;
+            }
+            navLinks += `</ul>`;
+            navContainer.innerHTML = navLinks;
+        }
+        
+        // --- LÓGICA DA PÁGINA HOME ---
+        function renderHomePage() {
+            const pageContainer = document.getElementById('home-page');
+            pageContainer.innerHTML = `
+                <section id="home-hero">
+                    <div class="container">
+                        <h1>Aposte com Dados, Não com Achismos.</h1>
+                        <p>Bem-vindo à UnderPro AI, a plataforma que utiliza a metodologia SEMPE para encontrar apostas com Valor Esperado Positivo (EV+). Pare de perder dinheiro e comece a investir no esporte.</p>
+                        <div>
+                            <a href="#" class="btn btn-primary" data-page="dicas-free-page">Ver Dicas Gratuitas</a>
+                            <a href="#" class="btn btn-secondary" data-page="login-page">Acessar Área Premium</a>
+                        </div>
+                    </div>
+                </section>
+                <section id="home-methodology" class="section">
+                    <div class="container">
+                        <h2 class="section-title">Por que somos diferentes?</h2>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <h3>📊 Dados vs. Achismo</h3>
+                                <p>Nossa IA analisa milhares de pontos de dados para identificar padrões que o olho humano não vê. Adeus, "feeling". Olá, estatística.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>🔍 Transparência Total</h3>
+                                <p>Mostramos nosso histórico de performance de forma agregada. Acreditamos que a confiança se constrói com resultados verificáveis.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>🎓 Educação Financeira</h3>
+                                <p>Mais do que dicas, ensinamos gestão de banca e a mentalidade de longo prazo. Nosso objetivo é formar investidores esportivos, não apostadores.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+        
+        // --- LÓGICA DA PÁGINA DICAS FREE ---
+        async function renderDicasFreePage() {
+            const pageContainer = document.getElementById('dicas-free-page');
+            pageContainer.innerHTML = `
+                <div class="container">
+                    <div class="chat-container">
+                        <div class="chat-header">Dicas Gratuitas</div>
+                        <div class="chat-messages" id="free-tips-messages">
+                            <p>Carregando dicas...</p>
+                        </div>
+                        <div class="chat-footer">
+                            <a href="#" class="btn btn-primary" data-page="login-page">Ver Dicas Premium</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const messagesContainer = document.getElementById('free-tips-messages');
+            try {
+                const tips = await getFreeTips();
+                messagesContainer.innerHTML = tips.map(tip => `
+                    <div class="chat-bubble">
+                        <div class="tip-content">${tip.content}</div>
+                        <div class="tip-meta">
+                            <span>${tip.timestamp.toLocaleDateString()}</span>
+                            <div class="tip-reactions">
+                                <button data-tip-id="${tip.id}" data-emoji="👍">👍 ${tip.reactions['👍']}</button>
+                                <button data-tip-id="${tip.id}" data-emoji="🔥">🔥 ${tip.reactions['🔥']}</button>
+                                <button data-tip-id="${tip.id}" data-emoji="💰">💰 ${tip.reactions['💰']}</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                messagesContainer.innerHTML = '<p>Erro ao carregar as dicas.</p>';
+            }
+        }
+
+        // --- LÓGICA DA PÁGINA DICAS PREMIUM ---
+        async function renderDicasPremiumPage() {
+            const pageContainer = document.getElementById('dicas-premium-page');
+            if (!AppState.currentUser |
+
+| AppState.currentUser.subscriptionStatus!== 'premium') {
+                pageContainer.innerHTML = `<div class="container"><p>Acesso negado. Esta é uma área exclusiva para membros premium.</p></div>`;
+                return;
+            }
+            
+            pageContainer.innerHTML = `
+                <div class="container">
+                    <div class="chat-container">
+                        <div class="chat-header">💎 Dicas Premium 💎</div>
+                        <div class="chat-messages" id="premium-tips-messages">
+                            <p>Carregando dicas premium...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const messagesContainer = document.getElementById('premium-tips-messages');
+            try {
+                const tips = await getPremiumTips();
+                messagesContainer.innerHTML = tips.map(tip => `
+                    <div class="chat-bubble">
+                        <div class="tip-content">${tip.content}</div>
+                        <div class="tip-meta">
+                            <span>${tip.timestamp.toLocaleDateString()}</span>
+                            <div class="tip-reactions">
+                                <button data-tip-id="${tip.id}" data-emoji="👍">👍 ${tip.reactions['👍']}</button>
+                                <button data-tip-id="${tip.id}" data-emoji="🔥">🔥 ${tip.reactions['🔥']}</button>
+                                <button data-tip-id="${tip.id}" data-emoji="💰">💰 ${tip.reactions['💰']}</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                messagesContainer.innerHTML = '<p>Erro ao carregar as dicas.</p>';
+            }
+        }
+
+        // --- LÓGICA DAS PÁGINAS DE AUTENTICAÇÃO ---
+        function renderLoginPage() {
+            const pageContainer = document.getElementById('login-page');
+            pageContainer.innerHTML = `
+                <div class="auth-form-container">
+                    <h2>Acessar Plataforma</h2>
+                    <form id="login-form">
+                        <div id="login-error" class="hidden" style="color: var(--color-danger); margin-bottom: 1rem;"></div>
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Senha</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Entrar</button>
+                    </form>
+                    <div class="auth-switch">
+                        <p>Não tem uma conta? <a href="#" data-page="register-page">Cadastre-se</a></p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRegisterPage() {
+            // A lógica de cadastro é omitida para o MVP, focando no fluxo de login.
+            // Em um projeto real, esta função construiria o formulário de cadastro.
+            const pageContainer = document.getElementById('register-page');
+            pageContainer.innerHTML = `
+                <div class="auth-form-container">
+                    <h2>Criar Conta</h2>
+                    <p>A funcionalidade de cadastro será implementada na próxima fase.</p>
+                     <div class="auth-switch">
+                        <p>Já tem uma conta? <a href="#" data-page="login-page">Faça login</a></p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- LÓGICA DO APP DE GESTÃO ---
+        async function renderManagementAppPage() {
+            const pageContainer = document.getElementById('management-app-page');
+             if (!AppState.currentUser |
+
+| AppState.currentUser.subscriptionStatus!== 'premium') {
+                pageContainer.innerHTML = `<div class="container"><p>Acesso negado. Esta é uma área exclusiva para membros premium.</p></div>`;
+                return;
+            }
+
+            pageContainer.innerHTML = `
+                <div class="container">
+                    <h2 class="section-title">App de Gestão de Banca</h2>
+                    <div id="management-app-grid">
+                        <div id="bet-entry-card" class="management-card">
+                            <h3>Registrar Nova Aposta</h3>
+                            <form id="bet-form">
+                                <div class="form-group">
+                                    <label for="bet-odd">Odd da Aposta</label>
+                                    <input type="number" step="0.01" id="bet-odd" required>
+                                </div>
+                                <p>Stake Recomendado (SEMPE): <strong id="recommended-stake">Calculando...</strong></p>
+                                <button type="submit" class="btn btn-primary">Registrar Aposta</button>
+                            </form>
+                        </div>
+                        <div id="dashboard-card" class="management-card">
+                            <h3>Dashboard</h3>
+                            <div class="dashboard-stats">
+                                <div class="stat-item">
+                                    <h4>Banca Atual</h4>
+                                    <p id="current-bankroll">R$ 0,00</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h4>Lucro/Prejuízo</h4>
+                                    <p id="total-profit">R$ 0,00</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h4>ROI</h4>
+                                    <p id="roi">0.00%</p>
+                                </div>
+                            </div>
+                            <h3>Histórico de Apostas</h3>
+                            <div style="max-height: 300px; overflow-y: auto;">
+                                <table class="history-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Odd</th>
+                                            <th>Stake</th>
+                                            <th>Resultado</th>
+                                            <th>Lucro</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="history-table-body">
+                                        </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <button id="export-btn" class="btn btn-secondary">Exportar Histórico (JSON)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            updateManagementDashboard();
+        }
+
+        async function updateManagementDashboard() {
+            if (!AppState.currentUser) return;
+            const userId = AppState.currentUser.id;
+            const history = await getBankrollHistory(userId);
+            
+            const bankrollEl = document.getElementById('current-bankroll');
+            const profitEl = document.getElementById('total-profit');
+            const roiEl = document.getElementById('roi');
+            const tableBodyEl = document.getElementById('history-table-body');
+            const recommendedStakeEl = document.getElementById('recommended-stake');
+
+            const user = mockUsers.find(u => u.id === userId);
+            bankrollEl.textContent = `R$ ${user.bankroll.toFixed(2)}`;
+            
+            let totalProfit = 0;
+            let totalStaked = 0;
+            history.forEach(bet => {
+                totalProfit += bet.profit;
+                totalStaked += bet.stake;
+            });
+
+            profitEl.textContent = `R$ ${totalProfit.toFixed(2)}`;
+            profitEl.style.color = totalProfit >= 0? 'var(--color-success)' : 'var(--color-danger)';
+
+            const roi = totalStaked > 0? (totalProfit / totalStaked) * 100 : 0;
+            roiEl.textContent = `${roi.toFixed(2)}%`;
+
+            tableBodyEl.innerHTML = history.map(bet => `
+                <tr>
+                    <td>${bet.odd.toFixed(2)}</td>
+                    <td>R$ ${bet.stake.toFixed(2)}</td>
+                    <td style="color: ${bet.result === 'win'? 'var(--color-success)' : 'var(--color-danger)'}">${bet.result}</td>
+                    <td>R$ ${bet.profit.toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            // Simulação de cálculo de stake
+            const recommendedStake = user.bankroll * 0.05;
+            recommendedStakeEl.textContent = `R$ ${recommendedStake.toFixed(2)}`;
+        }
+
+        // --- INICIALIZAÇÃO E EVENT LISTENERS ---
+        function init() {
+            // Renderiza a página inicial e a navegação
+            renderHomePage();
+            updateNav();
+
+            // Adiciona event listener ao corpo para delegação de eventos
+            document.body.addEventListener('click', (e) => {
+                // Navegação
+                if (e.target.matches('[data-page]')) {
+                    e.preventDefault();
+                    const pageId = e.target.getAttribute('data-page');
+                    
+                    // Renderiza a página antes de navegar
+                    switch(pageId) {
+                        case 'home-page': renderHomePage(); break;
+                        case 'dicas-free-page': renderDicasFreePage(); break;
+                        case 'login-page': renderLoginPage(); break;
+                        case 'register-page': renderRegisterPage(); break;
+                        case 'dicas-premium-page': renderDicasPremiumPage(); break;
+                        case 'management-app-page': renderManagementAppPage(); break;
+                    }
+                    navigateTo(pageId);
+                }
+
+                // Logout
+                if (e.target.matches('#logout-btn')) {
+                    e.preventDefault();
+                    AppState.currentUser = null;
+                    navigateTo('home-page');
+                }
+
+                // Exportar Histórico
+                if (e.target.matches('#export-btn')) {
+                    const history = mockBankrollHistory;
+                    const dataStr = JSON.stringify(history, null, 2);
+                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    const exportFileDefaultName = 'underpro_history.json';
+                    const linkElement = document.createElement('a');
+                    linkElement.setAttribute('href', dataUri);
+                    linkElement.setAttribute('download', exportFileDefaultName);
+                    linkElement.click();
+                }
+            });
+
+            // Listener para submissão de formulários
+            document.body.addEventListener('submit', async (e) => {
+                // Formulário de Login
+                if (e.target.matches('#login-form')) {
+                    e.preventDefault();
+                    const email = document.getElementById('login-email').value;
+                    const password = document.getElementById('login-password').value;
+                    const errorEl = document.getElementById('login-error');
+                    
+                    try {
+                        const user = await login(email, password);
+                        AppState.currentUser = user;
+                        navigateTo('home-page'); // Ou para um dashboard
+                    } catch (error) {
+                        errorEl.textContent = error;
+                        errorEl.classList.remove('hidden');
+                    }
+                }
+
+                // Formulário de Aposta
+                if (e.target.matches('#bet-form')) {
+                    e.preventDefault();
+                    const odd = parseFloat(document.getElementById('bet-odd').value);
+                    if (isNaN(odd) |
+
+| odd <= 1) {
+                        alert('Por favor, insira uma odd válida.');
+                        return;
+                    }
+
+                    try {
+                        await saveBet(AppState.currentUser.id, { odd });
+                        alert('Aposta registrada com sucesso!');
+                        e.target.reset();
+                        updateManagementDashboard();
+                    } catch (error) {
+                        alert('Erro ao registrar aposta.');
+                    }
+                }
+            });
+        }
+
+        // Inicia a aplicação quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', init);
+    })();
+    </script>
+</body>
+</html>
