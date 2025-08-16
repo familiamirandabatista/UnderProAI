@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- DESIGN SYSTEM E VARIÁVEIS GLOBAIS (TEMA ESCURO - PADRÃO) --- */
+        /* --- DESIGN SYSTEM E VARIÁVEIS GLOBAIS --- */
         :root {
             --color-primary: #00D1B2; /* Verde-água tecnológico */
             --color-primary-dark: #00a38d;
@@ -39,7 +39,6 @@
         body {
             font-family: var(--font-family-primary);
             background-color: var(--color-background);
-            background-image: url('images/background-texture.png');
             color: var(--color-text-primary);
             line-height: 1.7;
             -webkit-font-smoothing: antialiased;
@@ -73,8 +72,9 @@
             background-color: rgba(18, 18, 18, 0.8);
             backdrop-filter: blur(10px);
             z-index: 1000;
-            padding: 15px 0; /* Padding ajustado para a nova logo */
+            padding: 20px 0; /* Padding ajustado para a nova logo */
             border-bottom: 1px solid var(--color-border);
+            transition: padding 0.3s ease;
         }
 
         #main-header .container {
@@ -84,9 +84,19 @@
         }
 
         .logo {
-            height: 120px; /* TAMANHO DA LOGO DUPLICADO */
+            height: 160px; /* TAMANHO DA LOGO DUPLICADO */
             width: auto;
+            transition: height 0.3s ease;
         }
+        
+        /* Efeito para diminuir o header ao rolar a página */
+        body.scrolled #main-header {
+            padding: 10px 0;
+        }
+        body.scrolled .logo {
+            height: 80px;
+        }
+
 
         #main-nav ul {
             list-style: none;
@@ -132,13 +142,18 @@
         
         /* --- SEÇÃO HERO --- */
         #home-hero {
-            padding-top: 220px; /* Mais espaço para o header maior */
+            padding-top: 240px; /* Mais espaço para o header maior */
             padding-bottom: 120px;
             text-align: center;
             background-image: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 1)), url('images/hero-background.png');
             background-size: cover;
             background-position: center;
             color: var(--color-text-primary);
+            transition: padding-top 0.3s ease;
+        }
+        
+        body.scrolled #home-hero {
+            padding-top: 140px;
         }
         
         #home-hero h1 {
@@ -530,8 +545,17 @@
             }
         }
         
-        window.addEventListener('scroll', revealOnScroll);
-        revealOnScroll(); // Executa uma vez no carregamento
+        function handleScroll() {
+            if (window.scrollY > 50) {
+                document.body.classList.add('scrolled');
+            } else {
+                document.body.classList.remove('scrolled');
+            }
+            revealOnScroll();
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Executa uma vez no carregamento
     </script>
 
 </body>
