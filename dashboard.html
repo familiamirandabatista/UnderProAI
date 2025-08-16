@@ -230,7 +230,7 @@
 
             <div class="controls">
                 <button id="quantitativeBtn" class="control-btn active">Modo Quantitativo</button>
-                <button id="simulativeBtn" class="control-btn">Modo Simulativo</button>
+                <button id="simulativeBtn" class="control-btn">Nossa Banca Acumulada (Unidades)</button>
             </div>
             
             <div id="statsContainer" class="stats-container">
@@ -301,27 +301,24 @@
             }
 
             function parseData(text) {
-                const entries = text.split('[R').slice(1); // Divide o texto em blocos para cada jogo
+                const entries = text.split('[R').slice(1);
                 const data = [];
 
                 entries.forEach(entryText => {
                     const lines = entryText.split('\n').map(line => line.trim());
                     
-                    // A primeira linha sempre tem as informações do jogo
                     const mainLine = lines[0];
                     const matchInfo = mainLine.match(/\d+\]\s(.*?)\s(\d+–\d+)\s(.*?)$/);
                     
-                    // A segunda linha tem o resultado
                     const resultLine = lines[1];
                     const resultInfo = resultLine ? resultLine.match(/RESULTADO: (Green|Red)/) : null;
 
-                    // Procura a primeira data nos "Últimos 5 jogos"
                     let date = null;
                     for (const line of lines) {
                         const dateInfo = line.match(/(\d{4}-\d{2}-\d{2}):/);
                         if (dateInfo) {
                             date = new Date(dateInfo[1] + 'T12:00:00Z');
-                            break; // Pega a primeira data que encontrar e para
+                            break;
                         }
                     }
 
@@ -365,11 +362,8 @@
                 let pointColors = [];
                 let tooltips = [];
                 
-                let currentBankroll = 100;
-                let currentScore = 0;
-                const averageOdd = 1.28;
-
                 if (mode === 'quantitative') {
+                    let currentScore = 0;
                     dataPoints.push(0);
                     labels.push(0);
                     pointColors.push('#BBBBBB');
@@ -393,18 +387,63 @@
                     return { labels, dataPoints, pointColors, tooltips, yAxisLabel: 'Pontuação (Greens - Reds)' };
 
                 } else if (mode === 'simulative') {
+                    const ODD_THRESHOLD = 1.27;
+                    const FIXED_STAKE_PERCENTAGE = 0.05;
+                    const ASSERTIVENESS = 0.807;
+                    const fixedOdd = 1.28;
+
+                    let currentBankroll = 100;
+                    let isSorosActive = false;
+                    let sorosStake = 0;
+
                     dataPoints.push(100);
                     labels.push(0);
                     pointColors.push('#BBBBBB');
-                    tooltips.push({ title: 'Banca Inicial', details: '100 Unidades' });
+                    tooltips.push({ title: 'Banca Inicial', details: '100.00 Unidades' });
 
                     data.forEach((entry, index) => {
-                        const stake = currentBankroll * 0.05;
-                        if (entry.result === 1) {
-                            currentBankroll += stake * (averageOdd - 1);
+                        let stake = 0;
+
+                        if (isSorosActive) {
+                            stake = sorosStake;
                         } else {
-                            currentBankroll -= stake;
+                            if (fixedOdd <= ODD_THRESHOLD) {
+                                stake = currentBankroll * FIXED_STAKE_PERCENTAGE;
+                            } else {
+                                const p = ASSERTIVENESS;
+                                const q = 1 - p;
+                                const b = fixedOdd - 1;
+                                const kellyValue = b * p - q;
+                                if (kellyValue > 0) {
+                                    const kellyFraction = kellyValue / b;
+                                    stake = currentBankroll * kellyFraction;
+                                } else {
+                                    stake = 0; // Evita aposta com EV negativo
+                                }
+                            }
                         }
+                        
+                        if (currentBankroll < stake) {
+                            stake = currentBankroll;
+                        }
+
+                        const profit = stake * (fixedOdd - 1);
+
+                        if (entry.result === 1) { // Green
+                            currentBankroll += profit;
+                            if (isSorosActive) {
+                                isSorosActive = false;
+                                sorosStake = 0;
+                            } else {
+                                isSorosActive = true;
+                                sorosStake = stake + profit;
+                            }
+                        } else { // Red
+                            currentBankroll -= stake;
+                            isSorosActive = false;
+                            sorosStake = 0;
+                        }
+                        
                         dataPoints.push(currentBankroll);
                         labels.push(index + 1);
                         pointColors.push(entry.result === 1 ? 'rgba(0, 209, 178, 1)' : 'rgba(239, 68, 68, 1)');
