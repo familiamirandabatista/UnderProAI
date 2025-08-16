@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- DESIGN SYSTEM E VARIÁVEIS GLOBAIS --- */
+        /* --- DESIGN SYSTEM E VARIÁVEIS GLOBAIS (TEMA ESCURO - PADRÃO) --- */
         :root {
             --color-primary: #00D1B2; /* Verde-água tecnológico */
             --color-primary-dark: #00a38d;
@@ -73,7 +73,7 @@
             background-color: rgba(18, 18, 18, 0.8);
             backdrop-filter: blur(10px);
             z-index: 1000;
-            padding: 20px 0; /* Padding ajustado para a nova logo */
+            padding: 15px 0; /* Padding ajustado para a nova logo */
             border-bottom: 1px solid var(--color-border);
         }
 
@@ -84,7 +84,7 @@
         }
 
         .logo {
-            height: 160px; /* TAMANHO DA LOGO DUPLICADO */
+            height: 120px; /* TAMANHO DA LOGO DUPLICADO */
             width: auto;
         }
 
@@ -338,7 +338,7 @@
             text-align: center;
         }
         
-        /* --- RESPONSIVIDADE --- */
+        /* --- RESPONSIVIDADE E TEMA CLARO PARA MOBILE --- */
         @media (max-width: 992px) {
             .features-grid, .steps-grid, .testimonials-grid {
                 grid-template-columns: 1fr;
@@ -352,6 +352,31 @@
         }
         
         @media (max-width: 768px) {
+            /* --- INÍCIO DO TEMA CLARO PARA MOBILE --- */
+            :root {
+                --color-background: #FFFFFF;
+                --color-surface: #F8F9FA;
+                --color-text-primary: #212529;
+                --color-text-secondary: #6C757D;
+                --color-border: #DEE2E6;
+            }
+
+            #main-header {
+                background-color: rgba(255, 255, 255, 0.8);
+            }
+
+            #main-nav a {
+                color: var(--color-text-primary);
+            }
+
+            #home-hero {
+                 color: var(--color-text-primary);
+            }
+
+            .btn-primary {
+                color: #FFFFFF;
+            }
+
             #home-hero h1 {
                 font-size: 2.5rem;
             }
@@ -361,6 +386,7 @@
             #main-nav {
                 display: none;
             }
+            /* --- FIM DO TEMA CLARO PARA MOBILE --- */
         }
     </style>
 </head>
