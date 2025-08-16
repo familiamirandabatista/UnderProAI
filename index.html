@@ -73,7 +73,7 @@
             background-color: rgba(18, 18, 18, 0.8);
             backdrop-filter: blur(10px);
             z-index: 1000;
-            padding: 12px 0; /* Padding ajustado para a nova logo */
+            padding: 20px 0; /* Padding ajustado para a nova logo */
             border-bottom: 1px solid var(--color-border);
         }
 
@@ -84,7 +84,7 @@
         }
 
         .logo {
-            height: 80px; /* TAMANHO DA LOGO DUPLICADO */
+            height: 160px; /* TAMANHO DA LOGO DUPLICADO */
             width: auto;
         }
 
@@ -97,7 +97,7 @@
 
         #main-nav a {
             text-decoration: none;
-            color: var(--color-text-primary); /* COR DO TEXTO DO MENU CORRIGIDA */
+            color: var(--color-text-primary);
             font-weight: 600;
             transition: color 0.3s ease;
         }
@@ -120,7 +120,7 @@
 
         .btn-primary {
             background-color: var(--color-primary);
-            color: #1E1E1E; /* COR DO TEXTO DO BOTÃO CORRIGIDA */
+            color: #1E1E1E;
             box-shadow: 0 4px 15px rgba(0, 209, 178, 0.2);
         }
 
@@ -132,7 +132,7 @@
         
         /* --- SEÇÃO HERO --- */
         #home-hero {
-            padding-top: 180px; /* Mais espaço para o header maior */
+            padding-top: 220px; /* Mais espaço para o header maior */
             padding-bottom: 120px;
             text-align: center;
             background-image: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 1)), url('images/hero-background.png');
@@ -227,6 +227,10 @@
         }
 
         /* --- SEÇÃO "COMO FUNCIONA" --- */
+        #how-it-works {
+            background-image: linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)), url('images/fundo-geometrico.png');
+            background-size: cover;
+        }
         .steps-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -277,10 +281,6 @@
         }
         
         /* --- SEÇÃO DEPOIMENTOS --- */
-        #testimonials {
-            background-image: linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)), url('images/fundo-geometrico.png');
-            background-size: cover;
-        }
         .testimonials-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
