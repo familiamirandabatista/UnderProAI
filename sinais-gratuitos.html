@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinais Gratuitos - UnderPro AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: #00D1B2;
+            --color-primary-dark: #00a38d;
+            --color-background: #121212;
+            --color-surface: #1E1E1E;
+            --color-text-primary: #EAEAEA;
+            --color-text-secondary: #BBBBBB;
+            --color-border: #333333;
+            --color-gold: #FFD700;
+            --border-radius: 12px;
+            --font-family-primary: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-family-primary);
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            line-height: 1.7;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        #main-header {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--color-border);
+            background-color: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        #main-header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { height: 80px; width: auto; }
+        #main-nav ul { list-style: none; display: flex; align-items: center; gap: 24px; }
+        #main-nav a { text-decoration: none; color: var(--color-text-primary); font-weight: 600; transition: color 0.3s ease; display: flex; align-items: center; gap: 8px; }
+        #main-nav a:hover { color: var(--color-primary); }
+        #main-nav .icon { width: 20px; height: 20px; }
+        #main-nav .icon-crown { color: var(--color-gold); }
+        
+        .btn-primary {
+            display: inline-block; padding: 12px 28px; border: none; border-radius: var(--border-radius); font-weight: 700;
+            cursor: pointer; transition: all 0.3s ease; text-decoration: none; background-color: var(--color-primary);
+            color: #1E1E1E; box-shadow: 0 4px 15px rgba(0, 209, 178, 0.2);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 209, 178, 0.3); }
+
+        .chat-page-header { padding: 60px 0; text-align: center; }
+        .chat-page-header h1 { font-size: 2.8rem; font-weight: 900; }
+        .chat-page-header p { font-size: 1.2rem; color: var(--color-text-secondary); margin-top: 8px; }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            height: 60vh;
+        }
+        .chat-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--color-border);
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .chat-bubble {
+            background-color: #2a2a2a;
+            padding: 12px 16px;
+            border-radius: var(--border-radius);
+            max-width: 85%;
+            align-self: flex-start;
+            border: 1px solid var(--color-border);
+        }
+        .chat-bubble .match-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--color-primary);
+        }
+        .chat-bubble .match-details {
+            margin-top: 8px;
+            color: var(--color-text-secondary);
+        }
+        .chat-footer {
+            padding: 16px;
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+            background-color: rgba(0,0,0,0.2);
+        }
+        
+        footer { padding: 40px 0; background-color: #000; color: var(--color-text-secondary); text-align: center; margin-top: 80px;}
+
+        @media (max-width: 768px) {
+            :root {
+                --color-background: #FFFFFF;
+                --color-surface: #F8F9FA;
+                --color-text-primary: #212529;
+                --color-text-secondary: #6C757D;
+                --color-border: #DEE2E6;
+            }
+            #main-header { background-color: rgba(255, 255, 255, 0.8); }
+            #main-nav { display: none; }
+            .btn-primary { color: #FFFFFF; }
+            .chat-bubble { background-color: #FFFFFF; }
+        }
+    </style>
+</head>
+<body>
+    <header id="main-header">
+        <div class="container">
+            <a href="index.html">
+                <img src="images/logo.png" alt="UnderPro AI Logo" class="logo">
+            </a>
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="index.html"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Home</a></li>
+                    <li><a href="sinais-gratuitos.html">Sinais Gratuitos</a></li>
+                    <li><a href="#"><svg class="icon icon-crown" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm0 0L12 14 22 4"></path></svg>Sinais VIP</a></li>
+                    <li><a href="#" class="btn btn-primary">Entrar</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="chat-page-header">
+            <div class="container">
+                <h1>Sinais Gratuitos da Semana</h1>
+                <p>Análises com alta taxa de assertividade, geradas por nossa IA.</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="chat-container">
+                <div class="chat-header" id="chat-header-title">Carregando dicas...</div>
+                <div class="chat-messages" id="chat-messages-container">
+                    <!-- As dicas serão inseridas aqui -->
+                </div>
+                <div class="chat-footer">
+                    <p>Para acesso a todas as análises e ferramentas, torne-se VIP.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 UnderPro AI. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const chatHeader = document.getElementById('chat-header-title');
+            const messagesContainer = document.getElementById('chat-messages-container');
+
+            async function loadTips() {
+                try {
+                    const response = await fetch('dicas-da-semana.txt');
+                    if (!response.ok) {
+                        throw new Error('Arquivo de dicas não encontrado.');
+                    }
+                    const textData = await response.text();
+                    return parseTips(textData);
+                } catch (error) {
+                    console.error("Erro ao carregar dicas:", error);
+                    return { title: 'Erro', tips: [] };
+                }
+            }
+
+            function parseTips(text) {
+                const lines = text.split('\n').map(line => line.trim()).filter(line => line);
+                const title = lines.shift() || 'Dicas da Semana';
+                
+                const aptaTips = lines
+                    .filter(line => line.includes('Apta'))
+                    .slice(0, 2); // Pega apenas as 2 primeiras
+
+                const tips = aptaTips.map(line => {
+                    // Remove o "▶" e o status "Apta" para limpar o nome do jogo
+                    const cleanLine = line.replace('▶', '').replace('Apta', '').trim();
+                    return { match: cleanLine, details: 'Análise detalhada disponível para membros VIP.' };
+                });
+
+                return { title, tips };
+            }
+
+            function displayTips({ title, tips }) {
+                chatHeader.textContent = title;
+                messagesContainer.innerHTML = ''; // Limpa a área de mensagens
+
+                if (tips.length > 0) {
+                    tips.forEach(tip => {
+                        const bubble = document.createElement('div');
+                        bubble.className = 'chat-bubble';
+                        bubble.innerHTML = `
+                            <div class="match-title">${tip.match}</div>
+                            <div class="match-details">${tip.details}</div>
+                        `;
+                        messagesContainer.appendChild(bubble);
+                    });
+                } else {
+                    messagesContainer.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary);">Nenhuma dica gratuita disponível no momento. Volte mais tarde!</p>';
+                }
+            }
+
+            const tipData = await loadTips();
+            displayTips(tipData);
+        });
+    </script>
+</body>
+</html>
