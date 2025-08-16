@@ -301,33 +301,40 @@
             }
 
             function parseData(text) {
-                const lines = text.split('\n').map(line => line.trim());
+                const entries = text.split('[R').slice(1); // Divide o texto em blocos para cada jogo
                 const data = [];
-                let currentMatch = null;
 
-                for (const line of lines) {
-                    if (line.startsWith('[R')) {
-                        const matchInfo = line.match(/\[R\d+\]\s(.*?)\s(\d+–\d+)\s(.*?)$/);
-                        const resultInfo = line.match(/RESULTADO: (Green|Red)/);
-                        
-                        if (matchInfo && resultInfo) {
-                            currentMatch = {
-                                teams: `${matchInfo[1].trim()} vs ${matchInfo[3].trim()}`,
-                                score: matchInfo[2].trim(),
-                                result: resultInfo[1] === 'Green' ? 1 : 0,
-                                date: null
-                            };
-                            data.push(currentMatch);
-                        }
-                    } 
-                    else if (currentMatch && !currentMatch.date) {
+                entries.forEach(entryText => {
+                    const lines = entryText.split('\n').map(line => line.trim());
+                    
+                    // A primeira linha sempre tem as informações do jogo
+                    const mainLine = lines[0];
+                    const matchInfo = mainLine.match(/\d+\]\s(.*?)\s(\d+–\d+)\s(.*?)$/);
+                    
+                    // A segunda linha tem o resultado
+                    const resultLine = lines[1];
+                    const resultInfo = resultLine ? resultLine.match(/RESULTADO: (Green|Red)/) : null;
+
+                    // Procura a primeira data nos "Últimos 5 jogos"
+                    let date = null;
+                    for (const line of lines) {
                         const dateInfo = line.match(/(\d{4}-\d{2}-\d{2}):/);
                         if (dateInfo) {
-                            currentMatch.date = new Date(dateInfo[1] + 'T12:00:00Z'); // Adiciona T12:00:00Z para evitar problemas de fuso horário
+                            date = new Date(dateInfo[1] + 'T12:00:00Z');
+                            break; // Pega a primeira data que encontrar e para
                         }
                     }
-                }
-                return data.filter(d => d.date); // Retorna apenas jogos onde uma data foi encontrada
+
+                    if (matchInfo && resultInfo && date) {
+                        data.push({
+                            teams: `${matchInfo[1].trim()} vs ${matchInfo[3].trim()}`,
+                            score: matchInfo[2].trim(),
+                            result: resultInfo[1] === 'Green' ? 1 : 0,
+                            date: date
+                        });
+                    }
+                });
+                return data;
             }
 
             // --- 2. LÓGICA DOS GRÁFICOS E ESTATÍSTICAS ---
