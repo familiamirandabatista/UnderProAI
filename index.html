@@ -266,11 +266,28 @@
             color: var(--color-text-secondary);
         }
 
-        /* --- SEÇÃO "COMO FUNCIONA" --- */
-        #how-it-works {
+        /* --- SEÇÃO ESTRATÉGIA --- */
+        #strategy-section {
             background-image: linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)), url('images/fundo-geometrico.png');
             background-size: cover;
         }
+        .strategy-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+        .strategy-text p {
+            margin-bottom: 16px;
+            color: var(--color-text-secondary);
+        }
+        .strategy-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--color-primary);
+        }
+
+        /* --- SEÇÃO "COMO FUNCIONA" --- */
         .steps-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -385,7 +402,7 @@
         
         /* --- RESPONSIVIDADE E TEMA CLARO PARA MOBILE --- */
         @media (max-width: 992px) {
-            .features-grid, .steps-grid, .testimonials-grid {
+            .features-grid, .steps-grid, .testimonials-grid, .strategy-content {
                 grid-template-columns: 1fr;
             }
             .steps-grid::before {
@@ -450,6 +467,7 @@
                             Home
                         </a>
                     </li>
+                    <li><a href="#strategy-section">A Estratégia</a></li>
                     <li><a href="sinais-gratuitos.html">Sinais Gratuitos</a></li>
                     <li>
                         <a href="#">
@@ -468,7 +486,7 @@
             <div class="container reveal">
                 <h1>Aposte com Dados, Não com Achismos.</h1>
                 <p>A UnderPro AI utiliza inteligência artificial para analisar milhares de dados e encontrar as melhores oportunidades no mercado de apostas esportivas.</p>
-                <a href="sinais-gratuitos.html" class="btn btn-primary">Ver Dicas Gratuitas Agora</a>
+                <a href="sinais-gratuitos.html" class="btn btn-primary">Ver Sinais Gratuitos Agora</a>
             </div>
         </section>
         
@@ -498,6 +516,26 @@
                         </div>
                         <h3>Educação Financeira</h3>
                         <p>Mais do que dicas, ensinamos gestão de banca e a mentalidade de longo prazo. Formamos investidores, não apostadores.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOVA SEÇÃO ESTRATÉGIA -->
+        <section id="strategy-section" class="section">
+            <div class="container">
+                <h2 class="section-title reveal">A Estratégia Lucrativa por Trás dos Sinais</h2>
+                <p class="section-subtitle reveal">Não se trata de sorte, mas de matemática. Nosso método foca em encontrar apostas de Valor Esperado Positivo (EV+), o segredo dos profissionais.</p>
+                <div class="strategy-content">
+                    <div class="strategy-text reveal">
+                        <h3>O que é Valor Esperado Positivo (EV+)?</h3>
+                        <p>Imagine uma moeda viciada que cai "cara" 60% das vezes, mas a casa de apostas paga como se a chance fosse de 50%. Apostar em "cara" repetidamente é uma decisão de EV+, pois, a longo prazo, a probabilidade está a seu favor.</p>
+                        <p>Nossa IA faz exatamente isso: ela analisa milhares de dados para encontrar "moedas viciadas" no mercado – jogos onde a probabilidade de um resultado (como Menos de 3.5 Gols) é maior do que a odd oferecida sugere.</p>
+                    </div>
+                    <div class="strategy-text reveal">
+                        <h3>Como 80.7% de Acerto se Torna Lucro?</h3>
+                        <p>Muitos apostadores buscam odds altas e acabam perdendo no longo prazo. Nossa estratégia foca em consistência. Com uma assertividade de 80.7% e uma odd média de 1.28, a matemática é simples:</p>
+                        <p>A cada 100 apostas, acertamos cerca de 81. Ganhamos 81 vezes o lucro da odd e perdemos 19 vezes o valor apostado. O resultado final é um lucro consistente e previsível, transformando a aposta em um verdadeiro investimento.</p>
                     </div>
                 </div>
             </div>
