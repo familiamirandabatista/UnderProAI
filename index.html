@@ -127,6 +127,19 @@
             text-decoration: none;
             text-align: center;
         }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--color-border);
+            color: var(--color-text-secondary);
+            margin-top: 16px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--color-surface);
+            border-color: var(--color-text-primary);
+            color: var(--color-text-primary);
+        }
 
         .btn-primary {
             background-color: var(--color-primary);
@@ -414,7 +427,6 @@
 
     <header id="main-header">
         <div class="container">
-            <!-- LOGO ATUALIZADA -->
             <img src="images/logo.png" alt="UnderPro AI Logo" class="logo">
             <nav id="main-nav">
                 <ul>
@@ -432,7 +444,7 @@
             <div class="container reveal">
                 <h1>Aposte com Dados, Não com Achismos.</h1>
                 <p>A UnderPro AI utiliza inteligência artificial para analisar milhares de dados e encontrar as melhores oportunidades no mercado de apostas esportivas.</p>
-                <a href="#" class="btn btn-primary">Ver Dicas Gratuitas Agora</a>
+                <a href="dashboard.html" class="btn btn-primary">Ver Dicas Gratuitas Agora</a>
             </div>
         </section>
         
@@ -454,6 +466,8 @@
                         </div>
                         <h3>Transparência Total</h3>
                         <p>Mostramos nosso histórico de performance de forma agregada. Acreditamos que a confiança se constrói com resultados verificáveis.</p>
+                        <!-- BOTÃO ADICIONADO AQUI -->
+                        <a href="dashboard.html" class="btn btn-secondary">Visualizar Histórico Completo</a>
                     </div>
                     <div class="feature-card reveal">
                         <div class="icon">
@@ -498,7 +512,6 @@
                     <div class="testimonial-card reveal">
                         <p>"Finalmente uma plataforma que trata apostas como investimento. A transparência e as ferramentas de gestão mudaram meu jogo completamente."</p>
                         <div class="testimonial-author">
-                            <!-- FOTO DE PERFIL DO HOMEM -->
                             <img src="images/foto-homem.png" alt="Foto de João P.">
                             <div>
                                 <h4>João P.</h4>
@@ -509,7 +522,6 @@
                     <div class="testimonial-card reveal">
                         <p>"Eu era cética no início, mas os resultados falam por si. A análise de dados da UnderPro AI é de outro nível. Recomendo fortemente."</p>
                         <div class="testimonial-author">
-                            <!-- FOTO DE PERFIL DA MULHER -->
                             <img src="images/foto-mulher.png" alt="Foto de Maria R.">
                             <div>
                                 <h4>Maria R.</h4>

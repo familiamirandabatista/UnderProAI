@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Performance - UnderPro AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: #00D1B2;
+            --color-primary-dark: #00a38d;
+            --color-background: #121212;
+            --color-surface: #1E1E1E;
+            --color-text-primary: #EAEAEA;
+            --color-text-secondary: #BBBBBB;
+            --color-border: #333333;
+            --color-green: #22c55e;
+            --color-red: #ef4444;
+            --border-radius: 12px;
+            --font-family-primary: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        #main-header {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .logo {
+            height: 80px;
+            width: auto;
+        }
+        
+        .dashboard-header {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+        }
+
+        .dashboard-header p {
+            font-size: 1.2rem;
+            color: var(--color-text-secondary);
+            margin-top: 8px;
+        }
+        
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--color-border);
+            background-color: transparent;
+            color: var(--color-text-secondary);
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn.active, .control-btn:hover {
+            background-color: var(--color-primary);
+            color: var(--color-surface);
+            border-color: var(--color-primary);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .stat-card {
+            background-color: var(--color-surface);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-border);
+        }
+        
+        .stat-card h3 {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .stat-card .green { color: var(--color-green); }
+        .stat-card .red { color: var(--color-red); }
+
+
+        .chart-container {
+            background-color: var(--color-surface);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-border);
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 80px 0;
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .cta-section p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        
+        .btn-primary {
+            display: inline-block;
+            padding: 14px 32px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            background-color: var(--color-primary);
+            color: #1E1E1E;
+            box-shadow: 0 4px 15px rgba(0, 209, 178, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 209, 178, 0.3);
+        }
+        
+        footer {
+            padding: 40px 0;
+            background-color: #000;
+            color: var(--color-text-secondary);
+            text-align: center;
+        }
+
+        /* TEMA CLARO PARA MOBILE */
+        @media (max-width: 768px) {
+            :root {
+                --color-background: #FFFFFF;
+                --color-surface: #F8F9FA;
+                --color-text-primary: #212529;
+                --color-text-secondary: #6C757D;
+                --color-border: #DEE2E6;
+            }
+            .btn-primary {
+                color: #FFFFFF;
+            }
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header id="main-header">
+        <div class="container">
+            <a href="index.html">
+                <img src="images/logo.png" alt="UnderPro AI Logo" class="logo">
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section class="dashboard-header">
+            <div class="container">
+                <h1>Performance Histórica da Estratégia</h1>
+                <p>Visualize nossos resultados desde 2019 de forma transparente.</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <div id="yearFilters" class="filters">
+                <!-- Botões de ano serão inseridos aqui pelo JavaScript -->
+            </div>
+
+            <div class="controls">
+                <button id="quantitativeBtn" class="control-btn active">Modo Quantitativo</button>
+                <button id="simulativeBtn" class="control-btn">Modo Simulativo</button>
+            </div>
+            
+            <div id="statsContainer" class="stats-container">
+                <div class="stat-card">
+                    <h3>Total de Entradas</h3>
+                    <p id="totalEntries">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Greens</h3>
+                    <p id="totalGreens" class="green">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Reds</h3>
+                    <p id="totalReds" class="red">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Assertividade</h3>
+                    <p id="successRate">0%</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+        
+        <section class="cta-section">
+            <div class="container">
+                <h2>Gostou do que viu?</h2>
+                <p>Tenha acesso a todas as nossas análises, ferramentas de gestão e dicas exclusivas. Junte-se à comunidade UnderPro AI e transforme suas apostas em investimentos.</p>
+                <a href="#" class="btn-primary">Acessar Área VIP</a>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 UnderPro AI. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const quantitativeBtn = document.getElementById('quantitativeBtn');
+            const simulativeBtn = document.getElementById('simulativeBtn');
+            const yearFiltersContainer = document.getElementById('yearFilters');
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            
+            let performanceChart = null;
+            let allHistoricalData = [];
+            let currentMode = 'quantitative';
+            let currentYear = 'all';
+
+            // --- 1. CARREGAMENTO E PROCESSAMENTO DOS DADOS ---
+            async function loadData() {
+                try {
+                    const response = await fetch('banco-de-dados.txt');
+                    if (!response.ok) {
+                        throw new Error('Não foi possível carregar o banco de dados.');
+                    }
+                    const textData = await response.text();
+                    return parseData(textData);
+                } catch (error) {
+                    console.error("Erro ao carregar dados:", error);
+                    document.getElementById('statsContainer').innerHTML = `<p style="color: var(--color-red); text-align: center; grid-column: 1 / -1;">Erro: Não foi possível carregar o arquivo 'banco-de-dados.txt'. Verifique se o arquivo está no lugar certo e tente novamente.</p>`;
+                    return [];
+                }
+            }
+
+            function parseData(text) {
+                const lines = text.split('\n').map(line => line.trim());
+                const data = [];
+                let currentMatch = null;
+
+                for (const line of lines) {
+                    if (line.startsWith('[R')) {
+                        const matchInfo = line.match(/\[R\d+\]\s(.*?)\s(\d+–\d+)\s(.*?)$/);
+                        const resultInfo = line.match(/RESULTADO: (Green|Red)/);
+                        
+                        if (matchInfo && resultInfo) {
+                            currentMatch = {
+                                teams: `${matchInfo[1].trim()} vs ${matchInfo[3].trim()}`,
+                                score: matchInfo[2].trim(),
+                                result: resultInfo[1] === 'Green' ? 1 : 0,
+                                date: null
+                            };
+                            data.push(currentMatch);
+                        }
+                    } 
+                    else if (currentMatch && !currentMatch.date) {
+                        const dateInfo = line.match(/(\d{4}-\d{2}-\d{2}):/);
+                        if (dateInfo) {
+                            currentMatch.date = new Date(dateInfo[1] + 'T12:00:00Z'); // Adiciona T12:00:00Z para evitar problemas de fuso horário
+                        }
+                    }
+                }
+                return data.filter(d => d.date); // Retorna apenas jogos onde uma data foi encontrada
+            }
+
+            // --- 2. LÓGICA DOS GRÁFICOS E ESTATÍSTICAS ---
+            function updateDashboard() {
+                const filteredData = currentYear === 'all' 
+                    ? allHistoricalData 
+                    : allHistoricalData.filter(d => d.date && d.date.getFullYear() == currentYear);
+                
+                updateStats(filteredData);
+                renderChart(currentMode, filteredData);
+            }
+            
+            function updateStats(data) {
+                const totalEntries = data.length;
+                const totalGreens = data.filter(d => d.result === 1).length;
+                const totalReds = totalEntries - totalGreens;
+                const successRate = totalEntries > 0 ? (totalGreens / totalEntries * 100).toFixed(2) : 0;
+
+                document.getElementById('totalEntries').textContent = totalEntries;
+                document.getElementById('totalGreens').textContent = totalGreens;
+                document.getElementById('totalReds').textContent = totalReds;
+                document.getElementById('successRate').textContent = `${successRate}%`;
+            }
+
+            function generateChartData(mode, data) {
+                let labels = [];
+                let dataPoints = [];
+                let pointColors = [];
+                let tooltips = [];
+                
+                let currentBankroll = 100;
+                let currentScore = 0;
+                const averageOdd = 1.28;
+
+                if (mode === 'quantitative') {
+                    dataPoints.push(0);
+                    labels.push(0);
+                    pointColors.push('#BBBBBB');
+                    tooltips.push({ title: 'Início', details: '' });
+                    
+                    data.forEach((entry, index) => {
+                        currentScore += (entry.result === 1 ? 1 : -1);
+                        dataPoints.push(currentScore);
+                        labels.push(index + 1);
+                        pointColors.push(entry.result === 1 ? 'rgba(0, 209, 178, 1)' : 'rgba(239, 68, 68, 1)');
+                        tooltips.push({
+                            title: `Entrada #${index + 1}`,
+                            details: [
+                                `${entry.date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}`,
+                                `${entry.teams}`,
+                                `Placar: ${entry.score}`
+                            ]
+                        });
+                    });
+                    
+                    return { labels, dataPoints, pointColors, tooltips, yAxisLabel: 'Pontuação (Greens - Reds)' };
+
+                } else if (mode === 'simulative') {
+                    dataPoints.push(100);
+                    labels.push(0);
+                    pointColors.push('#BBBBBB');
+                    tooltips.push({ title: 'Banca Inicial', details: '100 Unidades' });
+
+                    data.forEach((entry, index) => {
+                        const stake = currentBankroll * 0.05;
+                        if (entry.result === 1) {
+                            currentBankroll += stake * (averageOdd - 1);
+                        } else {
+                            currentBankroll -= stake;
+                        }
+                        dataPoints.push(currentBankroll);
+                        labels.push(index + 1);
+                        pointColors.push(entry.result === 1 ? 'rgba(0, 209, 178, 1)' : 'rgba(239, 68, 68, 1)');
+                        tooltips.push({
+                            title: `Entrada #${index + 1}`,
+                            details: [
+                                `${entry.date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}`,
+                                `${entry.teams}`,
+                                `Placar: ${entry.score}`
+                            ]
+                        });
+                    });
+
+                    return { labels, dataPoints, pointColors, tooltips, yAxisLabel: 'Unidades (U)' };
+                }
+            }
+
+            function renderChart(mode, data) {
+                if (performanceChart) {
+                    performanceChart.destroy();
+                }
+                
+                const { labels, dataPoints, pointColors, tooltips, yAxisLabel } = generateChartData(mode, data);
+                const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && window.innerWidth > 768;
+                const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                const textColor = isDarkMode ? '#EAEAEA' : '#212529';
+
+                performanceChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: dataPoints,
+                            borderColor: mode === 'quantitative' ? 'rgba(0, 209, 178, 0.8)' : 'rgba(50, 115, 220, 0.8)',
+                            backgroundColor: mode === 'quantitative' ? 'rgba(0, 209, 178, 0.1)' : 'rgba(50, 115, 220, 0.1)',
+                            pointBackgroundColor: pointColors,
+                            fill: true,
+                            tension: 0.1,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: (context) => tooltips[context[0].dataIndex].title,
+                                    label: (context) => {
+                                        const value = context.raw.toFixed(2);
+                                        return mode === 'quantitative' ? `Pontuação: ${value}` : `Banca: ${value} unidades`;
+                                    },
+                                    afterBody: (context) => tooltips[context[0].dataIndex].details,
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { 
+                                title: { display: true, text: 'Número de Entradas', color: textColor }, 
+                                grid: { display: false },
+                                ticks: { color: textColor }
+                            },
+                            y: { 
+                                title: { display: true, text: yAxisLabel, color: textColor }, 
+                                grid: { color: gridColor },
+                                ticks: { color: textColor }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // --- 3. INICIALIZAÇÃO E EVENTOS ---
+            function setupFilters() {
+                const years = [...new Set(allHistoricalData.map(d => d.date.getFullYear()))].sort();
+                yearFiltersContainer.innerHTML = '<button class="control-btn active" data-year="all">Ver Todos</button>';
+                years.forEach(year => {
+                    const button = document.createElement('button');
+                    button.className = 'control-btn';
+                    button.dataset.year = year;
+                    button.textContent = year;
+                    yearFiltersContainer.appendChild(button);
+                });
+
+                yearFiltersContainer.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'BUTTON') {
+                        document.querySelectorAll('#yearFilters .control-btn').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        currentYear = e.target.dataset.year;
+                        updateDashboard();
+                    }
+                });
+            }
+
+            quantitativeBtn.addEventListener('click', () => {
+                quantitativeBtn.classList.add('active');
+                simulativeBtn.classList.remove('active');
+                currentMode = 'quantitative';
+                updateDashboard();
+            });
+
+            simulativeBtn.addEventListener('click', () => {
+                simulativeBtn.classList.add('active');
+                quantitativeBtn.classList.remove('active');
+                currentMode = 'simulative';
+                updateDashboard();
+            });
+
+            async function initialize() {
+                allHistoricalData = await loadData();
+                setupFilters();
+                updateDashboard();
+            }
+
+            initialize();
+        });
+    </script>
+</body>
+</html>
